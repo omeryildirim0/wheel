@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
+// Function to shuffle an array
+const shuffleArray = (array: any[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 // Function to handle GET requests
 export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
@@ -25,8 +34,11 @@ export const GET = async (req: NextRequest) => {
       },
     });
 
-    // Get the first 20 restaurants
-    const restaurants = response.data.results.slice(0, 20);
+    // Shuffle the restaurants array
+    const shuffledRestaurants = shuffleArray(response.data.results);
+
+    // Get the first 20 random restaurants
+    const restaurants = shuffledRestaurants.slice(0, 20);
 
     return NextResponse.json(restaurants, { status: 200 });
   } catch (error) {

@@ -1,7 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
 import ZipcodePopup from '../components/ZipcodePopup';
-import { fetchRestaurants } from '@/lib/fetchRestaurants';
 import axios from 'axios';
 
 const Home = () => {
