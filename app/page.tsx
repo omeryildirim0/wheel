@@ -1,11 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
-import ZipcodePopup from '../components/ZipcodePopup';
+import { useState } from 'react';
 import axios from 'axios';
+import Wheel from '../components/Wheel';
 
 const Home = () => {
   const [zipcode, setZipcode] = useState('');
   const [restaurants, setRestaurants] = useState([]);
+  const [wheelVisible, setWheelVisible] = useState(false);
 
   const handleSearch = async () => {
     try {
@@ -13,27 +14,32 @@ const Home = () => {
         params: { zipcode },
       });
       setRestaurants(response.data);
+      setWheelVisible(true);
     } catch (error) {
       console.error('Error fetching restaurants', error);
     }
   };
 
   return (
-    <div>
-      <h1>Find Restaurants</h1>
-      <input
-        type="text"
-        value={zipcode}
-        onChange={(e) => setZipcode(e.target.value)}
-        placeholder="Enter Zip Code"
-      />
-      <button onClick={handleSearch}>Search</button>
+    <div className="max-w-lg mx-auto p-8 text-center">
+      <h1 className="text-2xl font-bold mb-6">Find Restaurants</h1>
+      <div className="mb-6">
+        <input
+          type="text"
+          value={zipcode}
+          onChange={(e) => setZipcode(e.target.value)}
+          placeholder="Enter Zip Code"
+          className="p-2 border border-gray-300 rounded-md w-2/3 focus:outline-none focus:border-blue-500"
+        />
+        <button
+          onClick={handleSearch}
+          className="ml-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+        >
+          Search
+        </button>
+      </div>
 
-      <ul>
-        {restaurants.map((restaurant: any, index: number) => (
-          <li key={index}>{restaurant.name}</li>
-        ))}
-      </ul>
+      {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
     </div>
   );
 };
