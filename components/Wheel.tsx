@@ -17,33 +17,43 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     }, 4000); // This should match the transition duration
   };
 
+  // Contrasting colors for better visibility
+  const colors = [
+    '#FF5733', '#33FF57', '#3357FF', '#FF33A6', '#FF8C33',
+    '#FFD733', '#8C33FF', '#33FFF5', '#F533FF', '#33FF8C',
+    '#5733FF', '#A633FF', '#FF5733', '#FF3380', '#33FFB2',
+    '#FF8C33', '#57FF33', '#33A6FF', '#FF3380', '#B233FF'
+  ];
+
   return (
     <div className="relative flex flex-col items-center">
-      <div id="wheel" className="w-80 h-80 rounded-full border-8 border-blue-500 relative overflow-hidden">
-        {restaurants.map((restaurant, index) => (
-          <div
-            key={index}
-            className={`absolute w-full h-full flex items-center justify-center text-center`}
-            style={{
-              transform: `rotate(${index * (360 / restaurants.length)}deg)`,
-              backgroundColor: `hsl(${index * (360 / restaurants.length)}, 70%, 60%)`,
-              clipPath: `polygon(50% 50%, 100% 0, 100% 100%)`,
-            }}
-          >
-            <span
+      <div className="relative">
+        <div id="wheel" className="w-80 h-80 rounded-full border-8 border-blue-500 relative overflow-hidden">
+          {restaurants.map((restaurant, index) => (
+            <div
+              key={index}
+              className={`absolute w-full h-full flex items-center justify-center text-center`}
               style={{
-                transform: `rotate(${(360 / restaurants.length) / 2}deg) translateY(-40%)`,
-                color: '#fff',
-                fontSize: '14px',
-                fontWeight: 'bold',
+                transform: `rotate(${index * (360 / restaurants.length)}deg)`,
+                backgroundColor: colors[index % colors.length],
+                clipPath: `polygon(50% 50%, 100% 0, 100% 100%)`,
               }}
             >
-              {restaurant}
-            </span>
-          </div>
-        ))}
+              <span
+                style={{
+                  transform: `rotate(${(360 / restaurants.length) / 2}deg) translateY(-40%)`,
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                }}
+              >
+                {restaurant}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="w-0 h-0 border-l-8 border-r-8 border-b-16 border-transparent border-b-red-500 absolute top-[-16px] left-[50%] transform -translate-x-1/2"></div>
       </div>
-      <div className="w-0 h-0 border-l-8 border-r-8 border-b-16 border-transparent border-b-red-500 absolute top-0"></div>
       <button
         onClick={spinWheel}
         className="mt-6 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200"
