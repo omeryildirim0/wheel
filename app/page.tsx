@@ -1,28 +1,42 @@
 'use client';
 import { useState, useEffect } from 'react';
 import ZipcodePopup from '../components/ZipcodePopup';
+import { fetchRestaurants } from '@/lib/fetchRestaurants';
+import axios from 'axios';
 
+const Home = () => {
+  const [zipcode, setZipcode] = useState('');
+  const [restaurants, setRestaurants] = useState([]);
 
-const HomePage: React.FC = () => {
-  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Open the popup when the page loads
-    setIsPopupOpen(true);
-  }, []);
-
-  const handleClosePopup = () => {
-    setIsPopupOpen(false);
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(`/api/restaurants`, {
+        params: { zipcode },
+      });
+      setRestaurants(response.data);
+    } catch (error) {
+      console.error('Error fetching restaurants', error);
+    }
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold text-gray-800">Welcome to Wheel of Lunch!</h1>
-      
-      {/* Zipcode Popup */}
-      <ZipcodePopup isOpen={isPopupOpen} onClose={handleClosePopup} />
+    <div>
+      <h1>Find Restaurants</h1>
+      <input
+        type="text"
+        value={zipcode}
+        onChange={(e) => setZipcode(e.target.value)}
+        placeholder="Enter Zip Code"
+      />
+      <button onClick={handleSearch}>Search</button>
+
+      <ul>
+        {restaurants.map((restaurant: any, index: number) => (
+          <li key={index}>{restaurant.name}</li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default HomePage;
+export default Home;
