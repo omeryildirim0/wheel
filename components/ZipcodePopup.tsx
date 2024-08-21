@@ -21,7 +21,7 @@ const ZipcodePopup: React.FC<ZipcodePopupProps> = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto p-6">
         <DialogHeader>
-          <DialogTitle>Enter Your Zipcode</DialogTitle>
+            <DialogTitle>Welcome to the Wheel! Please enter your zipcode to see the wheel.</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
           <input
