@@ -38,7 +38,7 @@ export const GET = async (req: NextRequest) => {
     const shuffledRestaurants = shuffleArray(response.data.results);
 
     // Get the first 20 random restaurants
-    const restaurants = shuffledRestaurants.slice(0, 20);
+    const restaurants = shuffledRestaurants.slice(0, 13);
 
     return NextResponse.json(restaurants, { status: 200 });
   } catch (error) {
