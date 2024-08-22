@@ -41,7 +41,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
             >
               <span
                 style={{
-                  transform: `rotate(${(360 / restaurants.length) / 2}deg) translateY(-40%)`,
+                  transform: `rotate(${(360 / restaurants.length) / 2}deg) translateY(-40%) rotate(-${index * (360 / restaurants.length)}deg)`,
                   color: '#fff',
                   fontSize: '14px',
                   fontWeight: 'bold',
