@@ -87,9 +87,10 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Calculate final position
-        const finalRotation = (currentRotation % 360 + anglePerSegment / 2) % 360; // Ensure it wraps around 360 degrees
-        const selectedIndex = Math.floor(finalRotation / anglePerSegment);
+        // Calculate the final rotation aligned with the 12 o'clock position
+        const finalRotation = (currentRotation % 360 + 360) % 360; // Adjust to 12 o'clock position
+        const normalizedRotation = (360 - finalRotation + anglePerSegment / 2) % 360;
+        const selectedIndex = Math.floor(normalizedRotation / anglePerSegment);
   
         setSelectedRestaurant(restaurants[selectedIndex]);
         setIsSpinning(false);
@@ -98,6 +99,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   
     requestAnimationFrame(animate);
   };
+  
+  
   
   
 
