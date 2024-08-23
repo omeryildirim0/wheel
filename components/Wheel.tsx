@@ -1,67 +1,115 @@
 // components/Wheel.tsx
 'use client';
-import React, { useRef, useState } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Text } from '@react-three/drei';
-import { useDrag } from '@use-gesture/react';
-import { a, useSpring } from '@react-spring/three';
-import * as THREE from 'three';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface WheelProps {
   restaurants: string[];
 }
 
-const WheelGroup: React.FC<WheelProps> = ({ restaurants }) => {
-  const wheelRef = useRef<THREE.Group>(null);
-  const [activeRotation, setActiveRotation] = useState(0);
-
-  const bind = useDrag(({ offset: [, y] }) => {
-    setActiveRotation(y);
-  });
-
-  const { rotationZ } = useSpring({
-    rotationZ: activeRotation / 100,
-    config: { tension: 300, friction: 20 },
-  });
-
-  const segments = restaurants.length;
-  const segmentAngle = (2 * Math.PI) / segments;
-
-  return (
-    <a.group ref={wheelRef} {...bind()} rotation-z={rotationZ}>
-      {restaurants.map((restaurant, index) => (
-        <group
-          key={index}
-          rotation={[0, 0, index * segmentAngle]}
-          position={[Math.cos(segmentAngle * index) * 3, Math.sin(segmentAngle * index) * 3, 0]}
-        >
-          <Text
-            position={[0, 1, 0]}
-            fontSize={0.25}
-            color="black"
-            anchorX="center"
-            anchorY="middle"
-            rotation={[0, 0, -segmentAngle * index]}
-          >
-            {restaurant}
-          </Text>
-          <mesh position={[0, 0.75, 0]}>
-            <planeGeometry args={[2, 0.75]} />
-            <meshBasicMaterial color={new THREE.Color(`hsl(${(360 / segments) * index}, 100%, 60%)`)} />
-          </mesh>
-        </group>
-      ))}
-    </a.group>
-  );
-};
-
 const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
+
+  const drawWheel = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const numSegments = restaurants.length;
+    const anglePerSegment = (2 * Math.PI) / numSegments;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY);
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw each segment
+    restaurants.forEach((restaurant, i) => {
+      const startAngle = i * anglePerSegment + rotation;
+      const endAngle = startAngle + anglePerSegment;
+
+      // Set color
+      ctx.fillStyle = `hsl(${(i * 360) / numSegments}, 100%, 50%)`;
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+      ctx.lineTo(centerX, centerY);
+      ctx.fill();
+
+      // Draw text
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(startAngle + anglePerSegment / 2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = 'white';
+      ctx.font = '16px Arial';
+      ctx.fillText(restaurant, radius - 10, 10);
+      ctx.restore();
+    });
+
+    // Draw arrow
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - radius - 10);
+    ctx.lineTo(centerX - 10, centerY - radius + 10);
+    ctx.lineTo(centerX + 10, centerY - radius + 10);
+    ctx.fill();
+  };
+
+  const spinWheel = () => {
+    if (isSpinning) return;
+    setIsSpinning(true);
+
+    const targetRotation = Math.random() * 360 + 360 * 3; // 3 full rotations + random offset
+    const targetIndex = Math.floor((targetRotation % 360) / (360 / restaurants.length));
+
+    setSelectedRestaurant(restaurants[targetIndex]);
+
+    const animationDuration = 3000; // 3 seconds
+    const startRotation = rotation;
+    const startTime = performance.now();
+
+    const animate = (time: number) => {
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+      const easingProgress = progress < 0.5 ? 2 * progress ** 2 : -1 + (4 - 2 * progress) * progress; // Ease-in-out
+
+      setRotation(startRotation + easingProgress * targetRotation);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setIsSpinning(false);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    drawWheel();
+  }, [rotation, restaurants]);
+
   return (
-    <Canvas style={{ height: '500px', width: '500px' }}>
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
-      <WheelGroup restaurants={restaurants} />
-    </Canvas>
+    <div className="flex flex-col items-center">
+      <canvas ref={canvasRef} width={400} height={400} className="mb-4"></canvas>
+      <button
+        onClick={spinWheel}
+        className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-200"
+        disabled={isSpinning}
+      >
+        {isSpinning ? 'Spinning...' : 'Spin'}
+      </button>
+      {selectedRestaurant && (
+        <p className="mt-4 text-xl font-bold">Selected: {selectedRestaurant}</p>
+      )}
+    </div>
   );
 };
 
