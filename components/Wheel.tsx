@@ -71,11 +71,11 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
 
     const numSegments = restaurants.length;
     const anglePerSegment = 360 / numSegments;
-    const spins = 5; // Number of full spins
+    const spins = 3; // Reduced number of full spins
     const randomOffset = Math.random() * 360; // Random offset within a single spin
     const targetRotation = spins * 360 + randomOffset; // Total rotation amount
 
-    const animationDuration = 3000; // 3 seconds
+    const animationDuration = 1500; // Shortened to 1.5 seconds
     const startRotation = rotation;
     const startTime = performance.now();
 
