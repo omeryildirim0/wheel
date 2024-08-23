@@ -65,32 +65,41 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const spinWheel = () => {
     if (isSpinning) return;
     setIsSpinning(true);
-
-    const targetRotation = Math.random() * 360 + 360 * 3; // 3 full rotations + random offset
-    const targetIndex = Math.floor((targetRotation % 360) / (360 / restaurants.length));
-
-    setSelectedRestaurant(restaurants[targetIndex]);
-
+  
+    const numSegments = restaurants.length;
+    const anglePerSegment = 360 / numSegments;
+    const spins = 5; // Number of full spins
+    const randomOffset = Math.random() * 360; // Random offset within a single spin
+    const targetRotation = spins * 360 + randomOffset; // Total rotation amount
+  
     const animationDuration = 3000; // 3 seconds
     const startRotation = rotation;
     const startTime = performance.now();
-
+  
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
       const easingProgress = progress < 0.5 ? 2 * progress ** 2 : -1 + (4 - 2 * progress) * progress; // Ease-in-out
-
-      setRotation(startRotation + easingProgress * targetRotation);
-
+  
+      const currentRotation = startRotation + easingProgress * targetRotation;
+      setRotation(currentRotation);
+  
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
+        // Calculate final position
+        const finalRotation = (currentRotation % 360 + anglePerSegment / 2) % 360; // Ensure it wraps around 360 degrees
+        const selectedIndex = Math.floor(finalRotation / anglePerSegment);
+  
+        setSelectedRestaurant(restaurants[selectedIndex]);
         setIsSpinning(false);
       }
     };
-
+  
     requestAnimationFrame(animate);
   };
+  
+  
 
   useEffect(() => {
     drawWheel();
