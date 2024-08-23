@@ -1,4 +1,3 @@
-// components/Wheel.tsx
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -10,7 +9,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
-  const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
+  const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
 
   const drawWheel = () => {
     const canvas = canvasRef.current;
@@ -34,7 +33,11 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       const endAngle = startAngle + anglePerSegment;
 
       // Set color
-      ctx.fillStyle = `hsl(${(i * 360) / numSegments}, 100%, 50%)`;
+      if (i === highlightedIndex) {
+        ctx.fillStyle = 'yellow'; // Highlighted segment color
+      } else {
+        ctx.fillStyle = `hsl(${(i * 360) / numSegments}, 100%, 50%)`;
+      }
 
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
@@ -65,48 +68,44 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const spinWheel = () => {
     if (isSpinning) return;
     setIsSpinning(true);
-  
+
     const numSegments = restaurants.length;
     const anglePerSegment = 360 / numSegments;
     const spins = 5; // Number of full spins
     const randomOffset = Math.random() * 360; // Random offset within a single spin
     const targetRotation = spins * 360 + randomOffset; // Total rotation amount
-  
+
     const animationDuration = 3000; // 3 seconds
     const startRotation = rotation;
     const startTime = performance.now();
-  
+
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
       const easingProgress = progress < 0.5 ? 2 * progress ** 2 : -1 + (4 - 2 * progress) * progress; // Ease-in-out
-  
+
       const currentRotation = startRotation + easingProgress * targetRotation;
       setRotation(currentRotation);
-  
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Calculate the final rotation aligned with the 12 o'clock position
-        const finalRotation = (currentRotation % 360 + 360) % 360; // Adjust to 12 o'clock position
-        const normalizedRotation = (360 - finalRotation + anglePerSegment / 2) % 360;
-        const selectedIndex = Math.floor(normalizedRotation / anglePerSegment);
-  
-        setSelectedRestaurant(restaurants[selectedIndex]);
+        // Calculate the final position where the wheel stops
+        const finalRotation = (currentRotation % 360 + 360) % 360; // Normalize to 0-360 degrees
+        const needlePosition = (360 - finalRotation) % 360; // Calculate needle position
+        const selectedIndex = Math.floor(needlePosition / anglePerSegment); // Determine which segment the needle points to
+
+        setHighlightedIndex(selectedIndex); // Highlight the selected segment
         setIsSpinning(false);
       }
     };
-  
+
     requestAnimationFrame(animate);
   };
-  
-  
-  
-  
 
   useEffect(() => {
     drawWheel();
-  }, [rotation, restaurants]);
+  }, [rotation, restaurants, highlightedIndex]);
 
   return (
     <div className="flex flex-col items-center">
@@ -118,9 +117,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       >
         {isSpinning ? 'Spinning...' : 'Spin'}
       </button>
-      {selectedRestaurant && (
-        <p className="mt-4 text-xl font-bold">Selected: {selectedRestaurant}</p>
-      )}
     </div>
   );
 };
