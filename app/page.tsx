@@ -42,7 +42,7 @@ const Home = () => {
 
       {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
 
-      <WheelThreeD />
+      {/* <WheelThreeD /> */}
     </div>
   );
 };
