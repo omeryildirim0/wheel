@@ -132,7 +132,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     if (!isDragging) return;
     setIsDragging(false);
 
-    const power = Math.abs(currentDragSpeed) * 300; // Reduced multiplier for more realistic spin power
+    const power = Math.abs(currentDragSpeed) * 400; // Slightly increased multiplier for faster spin
     setRotation(rotation + power); // Ensure rotation is reset properly each time
 
     spinWheel(power);
@@ -146,7 +146,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const numSegments = restaurants.length;
     const anglePerSegment = 360 / numSegments;
 
-    const animationDuration = 4000; // Duration of the spin animation
+    const animationDuration = 3500; // Slightly reduced duration for a faster spin
     const startRotation = rotation;
     const startTime = performance.now();
 
