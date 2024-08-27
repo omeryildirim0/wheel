@@ -11,6 +11,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const [rotation, setRotation] = useState(0);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startAngle, setStartAngle] = useState(0);
 
   const segmentColors = [
     '#FFCC00', '#FF9900', '#FF6600', '#FF3300', '#FF0000', '#CC0000', '#990000',
@@ -18,56 +20,50 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     '#FF0033', '#FF6600', '#FF9933', '#FFCC66', '#FFFF66', '#FFFF00'
   ];
 
-  // Function to shorten restaurant names
   const shortenName = (name: string) => {
-    const maxLength = 15; // Adjust this value as needed
+    const maxLength = 15;
     return name.length > maxLength ? name.slice(0, maxLength - 3) + '...' : name;
   };
 
   const drawWheel = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-  
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-  
+
     const numSegments = restaurants.length;
     const anglePerSegment = (2 * Math.PI) / numSegments;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const radius = Math.min(centerX, centerY);
-  
-    // Clear canvas
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-    // Draw each segment
+
     restaurants.forEach((restaurant, i) => {
       const startAngle = i * anglePerSegment + rotation;
       const endAngle = startAngle + anglePerSegment;
-  
-      // Use predefined segment colors
+
       ctx.fillStyle = segmentColors[i % segmentColors.length];
-  
+
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.lineTo(centerX, centerY);
       ctx.fill();
-  
-      // Draw text
+
       const shortName = shortenName(restaurant);
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + anglePerSegment / 2);
       ctx.textAlign = 'right';
       ctx.fillStyle = 'white';
-      ctx.font = i % 2 === 0 ? 'bold 18px Arial' : '16px Arial'; // Bold text for some segments
+      ctx.font = i % 2 === 0 ? 'bold 18px Arial' : '16px Arial';
       ctx.fillText(shortName, radius - 10, 10);
       ctx.restore();
     });
-  
-    // Draw center label
-    ctx.fillStyle = '#FFCC00'; // Gold color
+
+    ctx.fillStyle = '#FFCC00';
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius / 4, 0, 2 * Math.PI);
     ctx.fill();
@@ -76,8 +72,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.textAlign = 'center';
     ctx.fillText('Wheel of', centerX, centerY - 10);
     ctx.fillText('Lunch', centerX, centerY + 20);
-  
-    // Draw arrow
+
     ctx.fillStyle = 'gold';
     ctx.beginPath();
     ctx.moveTo(centerX, centerY - radius - 10);
@@ -85,53 +80,104 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.lineTo(centerX + 20, centerY - radius + 20);
     ctx.fill();
   };
-  
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (isSpinning) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const x = e.clientX - rect.left - centerX;
+    const y = e.clientY - rect.top - centerY;
+    const angle = Math.atan2(y, x);
+
+    setIsDragging(true);
+    setStartAngle(angle - rotation);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const x = e.clientX - rect.left - centerX;
+    const y = e.clientY - rect.top - centerY;
+    const angle = Math.atan2(y, x);
+
+    setRotation(angle - startAngle);
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+
+    // Optionally, add a small spin effect when the mouse is released
+    const spinBoost = Math.random() * 360;
+    setRotation(rotation + spinBoost);
+    spinWheel();
+  };
+
   const spinWheel = () => {
     if (isSpinning) return;
     setIsSpinning(true);
-    setSelectedRestaurant(null); // Reset selected restaurant before spinning
-  
+    setSelectedRestaurant(null);
+
     const numSegments = restaurants.length;
     const anglePerSegment = 360 / numSegments;
-    const spins = 5; // Number of full spins
-    const randomOffset = Math.random() * 360; // Random offset within a single spin
-    const targetRotation = spins * 360 + randomOffset; // Total rotation amount
-  
-    const animationDuration = 3000; // Duration of the spin animation
+    const spins = 5;
+    const randomOffset = Math.random() * 360;
+    const targetRotation = spins * 360 + randomOffset;
+
+    const animationDuration = 3000;
     const startRotation = rotation;
     const startTime = performance.now();
-  
+
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
-      const easingProgress = progress < 0.5 ? 2 * progress ** 2 : -1 + (4 - 2 * progress) * progress; // Ease-in-out
-  
+      const easingProgress = progress < 0.5 ? 2 * progress ** 2 : -1 + (4 - 2 * progress) * progress;
+
       const currentRotation = startRotation + easingProgress * targetRotation;
       setRotation(currentRotation);
-  
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        // Calculate final rotation and selected segment
-        const finalRotation = (currentRotation % 360 + 360) % 360; // Normalize to 0-360 degrees
+        const finalRotation = (currentRotation % 360 + 360) % 360;
         const selectedIndex = Math.floor((finalRotation + anglePerSegment / 2) / anglePerSegment) % numSegments;
-  
-        setHighlightedIndex(selectedIndex); // Highlight the selected segment
-        setSelectedRestaurant(restaurants[selectedIndex]); // Set the selected restaurant
+
+        setHighlightedIndex(selectedIndex);
+        setSelectedRestaurant(restaurants[selectedIndex]);
         setIsSpinning(false);
       }
     };
-  
+
     requestAnimationFrame(animate);
   };
-  
+
   useEffect(() => {
     drawWheel();
   }, [rotation, restaurants, highlightedIndex]);
 
   return (
     <div className="flex flex-col items-center">
-      <canvas ref={canvasRef} width={400} height={400} className="mb-4"></canvas>
+      <canvas
+        ref={canvasRef}
+        width={400}
+        height={400}
+        className="mb-4"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp} // Ensure spinning stops if the mouse leaves the canvas
+      ></canvas>
       <button
         onClick={spinWheel}
         className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-200"
@@ -139,7 +185,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       >
         {isSpinning ? 'Spinning...' : 'Spin'}
       </button>
-      {selectedRestaurant && ( // Display selected restaurant
+      {selectedRestaurant && (
         <div className="mt-4 text-xl font-bold">
           Selected Restaurant: {selectedRestaurant}
         </div>
