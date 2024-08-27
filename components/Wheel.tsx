@@ -13,6 +13,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startAngle, setStartAngle] = useState(0);
+  const [lastTime, setLastTime] = useState(0);
+  const [currentDragSpeed, setCurrentDragSpeed] = useState(0);
 
   const segmentColors = [
     '#FFCC00', '#FF9900', '#FF6600', '#FF3300', '#FF0000', '#CC0000', '#990000',
@@ -96,6 +98,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
 
     setIsDragging(true);
     setStartAngle(angle - rotation);
+    setLastTime(performance.now());
+    setCurrentDragSpeed(0);
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -111,38 +115,45 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const y = e.clientY - rect.top - centerY;
     const angle = Math.atan2(y, x);
 
-    setRotation(angle - startAngle);
+    const newRotation = angle - startAngle;
+    setRotation(newRotation);
+
+    const currentTime = performance.now();
+    const deltaTime = currentTime - lastTime;
+
+    if (deltaTime > 0) {
+      const angularSpeed = (newRotation - rotation) / deltaTime;
+      setCurrentDragSpeed(angularSpeed);
+      setLastTime(currentTime);
+    }
   };
 
   const handleMouseUp = () => {
     if (!isDragging) return;
     setIsDragging(false);
 
-    // Optionally, add a small spin effect when the mouse is released
-    const spinBoost = Math.random() * 360;
-    setRotation(rotation + spinBoost);
-    spinWheel();
+    const power = Math.abs(currentDragSpeed) * 300; // Reduced multiplier for more realistic spin power
+    setRotation(rotation + power); // Ensure rotation is reset properly each time
+
+    spinWheel(power);
   };
 
-  const spinWheel = () => {
+  const spinWheel = (targetRotation: number) => {
     if (isSpinning) return;
     setIsSpinning(true);
     setSelectedRestaurant(null);
 
     const numSegments = restaurants.length;
     const anglePerSegment = 360 / numSegments;
-    const spins = 5;
-    const randomOffset = Math.random() * 360;
-    const targetRotation = spins * 360 + randomOffset;
 
-    const animationDuration = 3000;
+    const animationDuration = 4000; // Duration of the spin animation
     const startRotation = rotation;
     const startTime = performance.now();
 
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
-      const easingProgress = progress < 0.5 ? 2 * progress ** 2 : -1 + (4 - 2 * progress) * progress;
+      const easingProgress = 1 - Math.pow(1 - progress, 3); // Easing function for realistic slow down
 
       const currentRotation = startRotation + easingProgress * targetRotation;
       setRotation(currentRotation);
@@ -156,6 +167,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         setHighlightedIndex(selectedIndex);
         setSelectedRestaurant(restaurants[selectedIndex]);
         setIsSpinning(false);
+        setCurrentDragSpeed(0); // Reset drag speed after each spin
       }
     };
 
@@ -176,10 +188,10 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp} // Ensure spinning stops if the mouse leaves the canvas
+        onMouseLeave={handleMouseUp}
       ></canvas>
       <button
-        onClick={spinWheel}
+        onClick={() => spinWheel(360)} // Allow clicking the button to spin with a fixed power
         className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-200"
         disabled={isSpinning}
       >
