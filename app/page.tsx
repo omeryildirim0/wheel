@@ -40,7 +40,10 @@ const Home = () => {
         </button>
       </div>
 
-      {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
+      <div className='mt-25'>
+        {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
+      </div>
+      
 
       {/* <WheelThreeD /> */}
     </div>

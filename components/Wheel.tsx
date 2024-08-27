@@ -45,6 +45,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     restaurants.forEach((restaurant, i) => {
       const startAngle = i * anglePerSegment + rotation;
       const endAngle = startAngle + anglePerSegment;
+      const isHighlighted = i === highlightedIndex;
 
       ctx.fillStyle = segmentColors[i % segmentColors.length];
 
@@ -54,13 +55,23 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       ctx.lineTo(centerX, centerY);
       ctx.fill();
 
-      const shortName = shortenName(restaurant);
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + anglePerSegment / 2);
+
+      const shortName = shortenName(restaurant);
+
+      if (isHighlighted) {
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 20px Arial';
+        ctx.shadowColor = 'white';
+        ctx.shadowBlur = 10;
+      } else {
+        ctx.fillStyle = 'white';
+        ctx.font = '16px Arial';
+      }
+
       ctx.textAlign = 'right';
-      ctx.fillStyle = 'white';
-      ctx.font = i % 2 === 0 ? 'bold 18px Arial' : '16px Arial';
       ctx.fillText(shortName, radius - 10, 10);
       ctx.restore();
     });
@@ -74,13 +85,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.textAlign = 'center';
     ctx.fillText('Wheel of', centerX, centerY - 10);
     ctx.fillText('Lunch', centerX, centerY + 20);
-
-    ctx.fillStyle = 'gold';
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY - radius - 10);
-    ctx.lineTo(centerX - 20, centerY - radius + 20);
-    ctx.lineTo(centerX + 20, centerY - radius + 20);
-    ctx.fill();
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -132,7 +136,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     if (!isDragging) return;
     setIsDragging(false);
 
-    const power = Math.abs(currentDragSpeed) * 500; // Slightly increased multiplier for faster spin
+    const power = Math.abs(currentDragSpeed) * 400; // Slightly increased multiplier for faster spin
     setRotation(rotation + power); // Ensure rotation is reset properly each time
 
     spinWheel(power);
@@ -144,7 +148,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     setSelectedRestaurant(null);
 
     const numSegments = restaurants.length;
-    const anglePerSegment = 360 / numSegments;
+    const anglePerSegment = (2 * Math.PI) / numSegments;
+    const threeOClockAngle = Math.PI * 1.5; // Three o'clock position in radians
 
     const animationDuration = 3500; // Slightly reduced duration for a faster spin
     const startRotation = rotation;
@@ -161,11 +166,14 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        const finalRotation = (currentRotation % 360 + 360) % 360;
-        const selectedIndex = Math.floor((finalRotation + anglePerSegment / 2) / anglePerSegment) % numSegments;
+        const finalRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+        const selectedIndex = Math.floor(((threeOClockAngle - finalRotation + 2 * Math.PI) % (2 * Math.PI)) / anglePerSegment) % numSegments;
+
+        const selectedRestaurantName = restaurants[selectedIndex];
+        setSelectedRestaurant(selectedRestaurantName);
 
         setHighlightedIndex(selectedIndex);
-        setSelectedRestaurant(restaurants[selectedIndex]);
+
         setIsSpinning(false);
         setCurrentDragSpeed(0); // Reset drag speed after each spin
       }
@@ -179,7 +187,10 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   }, [rotation, restaurants, highlightedIndex]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center relative">
+      <div className="absolute top-0 p-4 text-xl font-semibold text-black bg-white bg-opacity-75 rounded-lg" style={{ marginTop: '-60px' }}>
+        Grab the wheel and give it a spin
+      </div>
       <canvas
         ref={canvasRef}
         width={400}
@@ -190,18 +201,9 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
       ></canvas>
-      <button
-        onClick={() => spinWheel(360)} // Allow clicking the button to spin with a fixed power
-        className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600 transition duration-200"
-        disabled={isSpinning}
-      >
-        {isSpinning ? 'Spinning...' : 'Spin'}
-      </button>
-      {selectedRestaurant && (
-        <div className="mt-4 text-xl font-bold">
-          Selected Restaurant: {selectedRestaurant}
-        </div>
-      )}
+      <div className="mt-4 p-4 text-xl font-bold text-black bg-white bg-opacity-75 rounded-lg">
+        {selectedRestaurant && `Selected: ${selectedRestaurant}`}
+      </div>
     </div>
   );
 };
