@@ -132,7 +132,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     if (!isDragging) return;
     setIsDragging(false);
 
-    const power = Math.abs(currentDragSpeed) * 400; // Slightly increased multiplier for faster spin
+    const power = Math.abs(currentDragSpeed) * 500; // Slightly increased multiplier for faster spin
     setRotation(rotation + power); // Ensure rotation is reset properly each time
 
     spinWheel(power);
