@@ -12,6 +12,12 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
 
+  const segmentColors = [
+    '#FFCC00', '#FF9900', '#FF6600', '#FF3300', '#FF0000', '#CC0000', '#990000',
+    '#FF99CC', '#FF66CC', '#FF33CC', '#CC0099', '#990066', '#FF6699', '#FF3366',
+    '#FF0033', '#FF6600', '#FF9933', '#FFCC66', '#FFFF66', '#FFFF00'
+  ];
+
   // Function to shorten restaurant names
   const shortenName = (name: string) => {
     const maxLength = 15; // Adjust this value as needed
@@ -39,9 +45,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       const startAngle = i * anglePerSegment + rotation;
       const endAngle = startAngle + anglePerSegment;
   
-      // Adjust hue calculation to avoid yellow (shifted hue to skip yellow range)
-      const hue = (i * 300) / numSegments; // We use 300 instead of 360 to avoid yellow
-      ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+      // Use predefined segment colors
+      ctx.fillStyle = segmentColors[i % segmentColors.length];
   
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
@@ -56,17 +61,28 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       ctx.rotate(startAngle + anglePerSegment / 2);
       ctx.textAlign = 'right';
       ctx.fillStyle = 'white';
-      ctx.font = '16px Arial';
+      ctx.font = i % 2 === 0 ? 'bold 18px Arial' : '16px Arial'; // Bold text for some segments
       ctx.fillText(shortName, radius - 10, 10);
       ctx.restore();
     });
   
+    // Draw center label
+    ctx.fillStyle = '#FFCC00'; // Gold color
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius / 4, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = 'blue';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Wheel of', centerX, centerY - 10);
+    ctx.fillText('Lunch', centerX, centerY + 20);
+  
     // Draw arrow
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'gold';
     ctx.beginPath();
     ctx.moveTo(centerX, centerY - radius - 10);
-    ctx.lineTo(centerX - 10, centerY - radius + 10);
-    ctx.lineTo(centerX + 10, centerY - radius + 10);
+    ctx.lineTo(centerX - 20, centerY - radius + 20);
+    ctx.lineTo(centerX + 20, centerY - radius + 20);
     ctx.fill();
   };
   
