@@ -10,7 +10,13 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
-  const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null); // New state for selected restaurant
+  const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
+
+  // Function to shorten restaurant names
+  const shortenName = (name: string) => {
+    const maxLength = 15; // Adjust this value as needed
+    return name.length > maxLength ? name.slice(0, maxLength - 3) + '...' : name;
+  };
 
   const drawWheel = () => {
     const canvas = canvasRef.current;
@@ -44,13 +50,14 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       ctx.fill();
   
       // Draw text
+      const shortName = shortenName(restaurant);
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + anglePerSegment / 2);
       ctx.textAlign = 'right';
       ctx.fillStyle = 'white';
       ctx.font = '16px Arial';
-      ctx.fillText(restaurant, radius - 10, 10);
+      ctx.fillText(shortName, radius - 10, 10);
       ctx.restore();
     });
   
@@ -63,8 +70,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.fill();
   };
   
-  
-
   const spinWheel = () => {
     if (isSpinning) return;
     setIsSpinning(true);
@@ -104,7 +109,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     requestAnimationFrame(animate);
   };
   
-
   useEffect(() => {
     drawWheel();
   }, [rotation, restaurants, highlightedIndex]);
