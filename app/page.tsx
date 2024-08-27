@@ -40,7 +40,7 @@ const Home = () => {
         </button>
       </div>
 
-      <div className='mt-25'>
+      <div className='pt-10'>
         {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
       </div>
       
