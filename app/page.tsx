@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import Wheel from '../components/Wheel';
+import WheelThreeD from '../components/Wheel3D';
 
 const Home = () => {
   const [zipcode, setZipcode] = useState('');
@@ -40,6 +41,8 @@ const Home = () => {
       </div>
 
       {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
+
+      <WheelThreeD />
     </div>
   );
 };
