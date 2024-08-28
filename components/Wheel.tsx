@@ -87,7 +87,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.fillText('Meals', centerX, centerY + 20);
   };
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     if (isSpinning) return;
 
     const canvas = canvasRef.current;
@@ -96,8 +96,10 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const rect = canvas.getBoundingClientRect();
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const x = e.clientX - rect.left - centerX;
-    const y = e.clientY - rect.top - centerY;
+    const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+    const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+    const x = clientX - rect.left - centerX;
+    const y = clientY - rect.top - centerY;
     const angle = Math.atan2(y, x);
 
     setIsDragging(true);
@@ -106,7 +108,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     setCurrentDragSpeed(0);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging) return;
 
     const canvas = canvasRef.current;
@@ -115,8 +117,10 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const rect = canvas.getBoundingClientRect();
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const x = e.clientX - rect.left - centerX;
-    const y = e.clientY - rect.top - centerY;
+    const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
+    const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+    const x = clientX - rect.left - centerX;
+    const y = clientY - rect.top - centerY;
     const angle = Math.atan2(y, x);
 
     const newRotation = angle - startAngle;
@@ -200,6 +204,9 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
+        onTouchStart={handleMouseDown} // Touch equivalent of mouse down
+        onTouchMove={handleMouseMove}  // Touch equivalent of mouse move
+        onTouchEnd={handleMouseUp}     // Touch equivalent of mouse up
       ></canvas>
       <div className="mt-4 p-4 text-xl font-bold text-black bg-white bg-opacity-75 rounded-lg">
         {selectedRestaurant && `Selected: ${selectedRestaurant}`}
