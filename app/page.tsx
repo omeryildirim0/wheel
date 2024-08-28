@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import axios from 'axios';
 import Wheel from '../components/Wheel';
-import WheelThreeD from '../components/Wheel3D';
 
 const Home = () => {
   const [zipcode, setZipcode] = useState('');
@@ -14,6 +13,7 @@ const Home = () => {
       const response = await axios.get(`/api/restaurants`, {
         params: { zipcode },
       });
+      console.log('API Response:', response.data); // Log the response data
       setRestaurants(response.data);
       setWheelVisible(true);
     } catch (error) {
@@ -41,11 +41,8 @@ const Home = () => {
       </div>
 
       <div className='pt-10'>
-        {wheelVisible && <Wheel restaurants={restaurants.map((r: any) => r.name)} />}
+        {wheelVisible && <Wheel restaurants={restaurants} />}
       </div>
-      
-
-      {/* <WheelThreeD /> */}
     </div>
   );
 };

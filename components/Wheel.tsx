@@ -1,8 +1,15 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 
+interface Restaurant {
+  name: string;
+  photoUrl: string;
+  rating: number;
+  address: string;
+}
+
 interface WheelProps {
-  restaurants: string[];
+  restaurants: Restaurant[];
 }
 
 const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
@@ -10,7 +17,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null);
-  const [selectedRestaurant, setSelectedRestaurant] = useState<string | null>(null);
+  const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startAngle, setStartAngle] = useState(0);
   const [lastTime, setLastTime] = useState(0);
@@ -30,37 +37,38 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const drawWheel = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-
+  
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
+  
     const numSegments = restaurants.length;
     const anglePerSegment = (2 * Math.PI) / numSegments;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const radius = Math.min(centerX, centerY);
-
+  
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
     restaurants.forEach((restaurant, i) => {
       const startAngle = i * anglePerSegment + rotation;
       const endAngle = startAngle + anglePerSegment;
       const isHighlighted = i === highlightedIndex;
-
+  
       ctx.fillStyle = segmentColors[i % segmentColors.length];
-
+  
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
       ctx.lineTo(centerX, centerY);
       ctx.fill();
-
+  
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + anglePerSegment / 2);
-
-      const shortName = shortenName(restaurant);
-
+  
+      // Use the restaurant name for display
+      const shortName = shortenName(restaurant.name);
+  
       if (isHighlighted) {
         ctx.fillStyle = 'white';
         ctx.font = 'bold 20px Arial';
@@ -70,12 +78,12 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         ctx.fillStyle = 'white';
         ctx.font = '16px Arial';
       }
-
+  
       ctx.textAlign = 'right';
       ctx.fillText(shortName, radius - 10, 10);
       ctx.restore();
     });
-
+  
     ctx.fillStyle = '#FFCC00';
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius / 4, 0, 2 * Math.PI);
@@ -86,6 +94,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.fillText('Wheel of', centerX, centerY - 10);
     ctx.fillText('Meals', centerX, centerY + 20);
   };
+  
 
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     if (isSpinning) return;
@@ -150,41 +159,43 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     if (isSpinning) return;
     setIsSpinning(true);
     setSelectedRestaurant(null);
-
+  
     const numSegments = restaurants.length;
     const anglePerSegment = (2 * Math.PI) / numSegments;
     const threeOClockAngle = Math.PI * 1.5; // Three o'clock position in radians
-
+  
     const animationDuration = 3500; // Slightly reduced duration for a faster spin
     const startRotation = rotation;
     const startTime = performance.now();
-
+  
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
       const easingProgress = 1 - Math.pow(1 - progress, 3); // Easing function for realistic slow down
-
+  
       const currentRotation = startRotation + easingProgress * targetRotation;
       setRotation(currentRotation);
-
+  
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
         const finalRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
         const selectedIndex = Math.floor(((threeOClockAngle - finalRotation + 2 * Math.PI) % (2 * Math.PI)) / anglePerSegment) % numSegments;
-
-        const selectedRestaurantName = restaurants[selectedIndex];
-        setSelectedRestaurant(selectedRestaurantName);
-
+  
+        // Set the selected restaurant object
+        const selectedRestaurantObj = restaurants[selectedIndex];
+        setSelectedRestaurant(selectedRestaurantObj);
+  
         setHighlightedIndex(selectedIndex);
-
+  
         setIsSpinning(false);
         setCurrentDragSpeed(0); // Reset drag speed after each spin
       }
     };
-
+  
     requestAnimationFrame(animate);
   };
+  
 
   useEffect(() => {
     drawWheel();
@@ -209,8 +220,18 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         onTouchEnd={handleMouseUp}     // Touch equivalent of mouse up
       ></canvas>
       <div className="mt-4 p-4 text-xl font-bold text-black bg-white bg-opacity-75 rounded-lg">
-        {selectedRestaurant && `Selected: ${selectedRestaurant}`}
+        {selectedRestaurant && (
+          <div>
+            <p>Selected: {selectedRestaurant.name}</p>
+            <p>Rating: {selectedRestaurant.rating}</p>
+            <p>Address: {selectedRestaurant.address}</p>
+            {selectedRestaurant.photoUrl && (
+              <img src={selectedRestaurant.photoUrl} alt={selectedRestaurant.name} className="w-full h-48 object-cover rounded-md" />
+            )}
+          </div>
+        )}
       </div>
+
     </div>
   );
 };
