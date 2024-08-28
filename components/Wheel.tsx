@@ -84,7 +84,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.font = 'bold 24px Arial';
     ctx.textAlign = 'center';
     ctx.fillText('Wheel of', centerX, centerY - 10);
-    ctx.fillText('Lunch', centerX, centerY + 20);
+    ctx.fillText('Meals', centerX, centerY + 20);
   };
 
   const handleMouseDown = (e: React.MouseEvent) => {
