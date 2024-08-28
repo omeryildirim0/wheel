@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
+import RestaurantCard from './RestaurantCard';
 
 interface Restaurant {
   name: string;
@@ -219,18 +220,11 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         onTouchMove={handleMouseMove}  // Touch equivalent of mouse move
         onTouchEnd={handleMouseUp}     // Touch equivalent of mouse up
       ></canvas>
-      <div className="mt-4 p-4 text-xl font-bold text-black bg-white bg-opacity-75 rounded-lg">
-        {selectedRestaurant && (
-          <div>
-            <p>Selected: {selectedRestaurant.name}</p>
-            <p>Rating: {selectedRestaurant.rating}</p>
-            <p>Address: {selectedRestaurant.address}</p>
-            {selectedRestaurant.photoUrl && (
-              <img src={selectedRestaurant.photoUrl} alt={selectedRestaurant.name} className="w-full h-48 object-cover rounded-md" />
-            )}
-          </div>
-        )}
-      </div>
+      {selectedRestaurant && (
+        <div className="mt-4">
+          <RestaurantCard restaurant={selectedRestaurant} />
+        </div>
+      )}
 
     </div>
   );
