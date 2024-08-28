@@ -37,10 +37,19 @@ export const GET = async (req: NextRequest) => {
     // Shuffle the restaurants array
     const shuffledRestaurants = shuffleArray(response.data.results);
 
-    // Get the first 20 random restaurants
-    const restaurants = shuffledRestaurants.slice(0, 12);
+    // Map through the results to extract necessary fields
+    const restaurants = shuffledRestaurants.slice(0, 12).map((restaurant: any) => ({
+      name: restaurant.name,
+      photoUrl: restaurant.photos && restaurant.photos.length > 0
+        ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${restaurant.photos[0].photo_reference}&key=${googlePlacesApiKey}`
+        : '', // Fallback if no photo is available
+      rating: restaurant.rating,
+      address: restaurant.formatted_address,
+      // Add other fields if necessary
+    }));
 
     return NextResponse.json(restaurants, { status: 200 });
+    
   } catch (error) {
     console.error('Error fetching restaurants:', error);
     return NextResponse.json({ error: 'Failed to fetch restaurants' }, { status: 500 });
