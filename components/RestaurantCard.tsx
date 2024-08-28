@@ -6,6 +6,7 @@ interface Restaurant {
   photoUrl: string;
   rating: number;
   address: string;
+  url: string; // Ensure this field is included
 }
 
 interface RestaurantCardProps {
@@ -14,7 +15,12 @@ interface RestaurantCardProps {
 
 const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md max-w-md w-full">
+    <a
+      href={restaurant.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block p-4 bg-white rounded-lg shadow-md max-w-md w-full hover:bg-gray-100 transition-colors duration-200"
+    >
       {restaurant.photoUrl && (
         <img
           src={restaurant.photoUrl}
@@ -25,8 +31,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
       <h2 className="text-xl font-bold mb-2">{restaurant.name}</h2>
       <p className="text-gray-700 mb-2">Rating: {restaurant.rating}</p>
       <p className="text-gray-600">{restaurant.address}</p>
-      {/* Add more restaurant details here if needed */}
-    </div>
+    </a>
   );
 };
 

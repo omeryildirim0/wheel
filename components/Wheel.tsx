@@ -7,6 +7,7 @@ interface Restaurant {
   photoUrl: string;
   rating: number;
   address: string;
+  url: string;
 }
 
 interface WheelProps {
