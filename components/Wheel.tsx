@@ -212,7 +212,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         ref={canvasRef}
         width={400}
         height={400}
-        className="mb-4"
+        className="mb-4 cursor-pointer"
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
