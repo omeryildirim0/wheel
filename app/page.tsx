@@ -13,7 +13,7 @@ const Home = () => {
       const response = await axios.get(`/api/restaurants`, {
         params: { zipcode },
       });
-      console.log('API Response:', response.data); // Log the response data
+      // console.log('API Response:', response.data); // Log the response data
       setRestaurants(response.data);
       setWheelVisible(true);
     } catch (error) {
