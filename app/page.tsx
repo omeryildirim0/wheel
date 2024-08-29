@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import axios from 'axios';
 import Wheel from '../components/Wheel';
 import SearchBar from '@/components/SearchBar';
 import useSearch from '@/hooks/useSearch';
