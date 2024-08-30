@@ -1,22 +1,23 @@
 import React from 'react';
+import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md py-4 fixed top-0 left-0 w-full z-10">
       <div className="max-w-screen-xl mx-auto px-6 flex justify-between items-center">
         {/* Homepage Link */}
-        <a href="/" className="text-2xl font-bold text-gray-800 dark:text-white">
+        <Link href="/" className="text-2xl font-bold text-gray-800 dark:text-white">
           Wheel of Meals
-        </a>
+        </Link>
 
         {/* Navigation Links */}
         <div className="hidden md:flex space-x-8">
-          <a href="/blog" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
+          <Link href="/blog" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
             Blog
-          </a>
-          <a href="/about" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
+          </Link>
+          <Link href="/about" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
             About Us
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu */}
