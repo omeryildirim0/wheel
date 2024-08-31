@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
+import confetti from 'canvas-confetti'; // Import confetti library
 import RestaurantCard from './RestaurantCard';
 
 interface Restaurant {
@@ -68,7 +69,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + anglePerSegment / 2);
   
-      // Use the restaurant name for display
       const shortName = shortenName(restaurant.name);
   
       if (isHighlighted) {
@@ -151,8 +151,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     if (!isDragging) return;
     setIsDragging(false);
 
-    const power = Math.abs(currentDragSpeed) * 800; // Slightly increased multiplier for faster spin
-    setRotation(rotation + power); // Ensure rotation is reset properly each time
+    const power = Math.abs(currentDragSpeed) * 800;
+    setRotation(rotation + power);
 
     spinWheel(power);
   };
@@ -166,14 +166,14 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const anglePerSegment = (2 * Math.PI) / numSegments;
     const threeOClockAngle = Math.PI * 1.5; // Three o'clock position in radians
   
-    const animationDuration = 3500; // Slightly reduced duration for a faster spin
+    const animationDuration = 3500;
     const startRotation = rotation;
     const startTime = performance.now();
   
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
-      const easingProgress = 1 - Math.pow(1 - progress, 3); // Easing function for realistic slow down
+      const easingProgress = 1 - Math.pow(1 - progress, 3);
   
       const currentRotation = startRotation + easingProgress * targetRotation;
       setRotation(currentRotation);
@@ -184,18 +184,27 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         const finalRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
         const selectedIndex = Math.floor(((threeOClockAngle - finalRotation + 2 * Math.PI) % (2 * Math.PI)) / anglePerSegment) % numSegments;
   
-        // Set the selected restaurant object
         const selectedRestaurantObj = restaurants[selectedIndex];
         setSelectedRestaurant(selectedRestaurantObj);
   
         setHighlightedIndex(selectedIndex);
-  
         setIsSpinning(false);
-        setCurrentDragSpeed(0); // Reset drag speed after each spin
+        setCurrentDragSpeed(0);
+
+        // Trigger confetti effect when the wheel stops
+        triggerConfetti();
       }
     };
   
     requestAnimationFrame(animate);
+  };
+
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
   };
   
 
@@ -217,16 +226,15 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        onTouchStart={handleMouseDown} // Touch equivalent of mouse down
-        onTouchMove={handleMouseMove}  // Touch equivalent of mouse move
-        onTouchEnd={handleMouseUp}     // Touch equivalent of mouse up
+        onTouchStart={handleMouseDown}
+        onTouchMove={handleMouseMove}
+        onTouchEnd={handleMouseUp}
       ></canvas>
       {selectedRestaurant && (
         <div className="mt-4">
           <RestaurantCard restaurant={selectedRestaurant} />
         </div>
       )}
-
     </div>
   );
 };
