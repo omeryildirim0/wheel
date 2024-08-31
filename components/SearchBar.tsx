@@ -7,8 +7,18 @@ interface SearchBarProps {
 
 const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [zipcode, setZipcode] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearch = () => {
+    // Basic validation for a 5-digit US zip code
+    const isValidZipcode = /^\d{5}$/.test(zipcode);
+
+    if (!isValidZipcode) {
+      setError('Please enter a valid 5-digit zip code.');
+      return;
+    }
+
+    setError(null); // Clear any previous errors
     onSearch(zipcode);
   };
 
@@ -27,6 +37,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       >
         Search
       </button>
+      {error && <p className="mt-2 text-red-500">{error}</p>}
     </div>
   );
 };
