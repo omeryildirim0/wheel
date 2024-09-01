@@ -27,7 +27,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
   const [currentDragSpeed, setCurrentDragSpeed] = useState(0);
 
   const audioContextRef = useRef<AudioContext | null>(null);
-  const tickIntervalRef = useRef<number | null>(null);
 
   const segmentColors = [
     '#FFCC00', '#FF9900', '#FF6600', '#FF3300', '#FF0000', '#CC0000', '#990000',
@@ -100,64 +99,58 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.fillText('Meals', centerX, centerY + 20);
   };
 
-  const createWheelSound = () => {
+  const playClappingAndCheeringSound = () => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
 
     const context = audioContextRef.current;
 
-    // Create a noise burst to simulate the clicking sound
-    const noiseBuffer = context.createBuffer(1, context.sampleRate * 0.02, context.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    for (let i = 0; i < noiseBuffer.length; i++) {
-      output[i] = (Math.random() * 2 - 1) * 0.3; // White noise, lower volume for a softer tick
-    }
+    // Simulate cheering using an oscillator
+    const cheerOscillator = context.createOscillator();
+    cheerOscillator.type = 'sawtooth'; // Sawtooth wave for a rougher cheering sound
+    cheerOscillator.frequency.setValueAtTime(200, context.currentTime); // Lower frequency for a base cheering sound
+    cheerOscillator.frequency.exponentialRampToValueAtTime(800, context.currentTime + 1.0); // Increase pitch over time
 
-    const noiseSource = context.createBufferSource();
-    noiseSource.buffer = noiseBuffer;
+    const cheerGain = context.createGain();
+    cheerGain.gain.setValueAtTime(0.2, context.currentTime); // Start volume
+    cheerGain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 1.0); // Fade out slowly
 
-    const noiseGain = context.createGain();
-    noiseGain.gain.setValueAtTime(0.2, context.currentTime);
+    cheerOscillator.connect(cheerGain);
+    cheerGain.connect(context.destination);
 
-    // Add a lower-frequency click for a fuller sound
-    const clickOscillator = context.createOscillator();
-    clickOscillator.type = 'triangle'; // Triangle wave for a richer click sound
-    clickOscillator.frequency.setValueAtTime(100, context.currentTime); // Lower frequency for a thicker sound
+    // Simulate clapping using noise bursts
+    const createClap = (delay: number) => {
+      const clapBuffer = context.createBuffer(1, context.sampleRate * 0.1, context.sampleRate);
+      const output = clapBuffer.getChannelData(0);
+      for (let i = 0; i < clapBuffer.length; i++) {
+        output[i] = Math.random() * 2 - 1; // White noise
+      }
 
-    const clickGain = context.createGain();
-    clickGain.gain.setValueAtTime(0.2, context.currentTime);
-    clickGain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1); // Quickly fade out
+      const clapSource = context.createBufferSource();
+      clapSource.buffer = clapBuffer;
 
-    // Connect all components to create a layered sound
-    noiseSource.connect(noiseGain).connect(context.destination);
-    clickOscillator.connect(clickGain).connect(context.destination);
+      const clapGain = context.createGain();
+      clapGain.gain.setValueAtTime(0.3, context.currentTime + delay); // Start volume
+      clapGain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + delay + 0.1); // Quickly fade out
 
-    noiseSource.start();
-    clickOscillator.start();
+      clapSource.connect(clapGain);
+      clapGain.connect(context.destination);
 
-    noiseSource.stop(context.currentTime + 0.02); // Short duration for the noise burst
-    clickOscillator.stop(context.currentTime + 0.1); // Longer duration for the low click
-  };
-
-  const startTickingSound = (initialInterval: number) => {
-    let currentInterval = initialInterval;
-
-    const tick = () => {
-      createWheelSound();
-      currentInterval = Math.max(50, currentInterval * 0.95); // Decrease interval to simulate speeding up
-
-      tickIntervalRef.current = window.setTimeout(tick, currentInterval);
+      clapSource.start(context.currentTime + delay);
+      clapSource.stop(context.currentTime + delay + 0.1); // Short duration for the clap
     };
 
-    tickIntervalRef.current = window.setTimeout(tick, currentInterval);
-  };
+    // Start cheering
+    cheerOscillator.start();
+    cheerOscillator.stop(context.currentTime + 1.0);
 
-  const stopTickingSound = () => {
-    if (tickIntervalRef.current) {
-      clearTimeout(tickIntervalRef.current);
-      tickIntervalRef.current = null;
-    }
+    // Create multiple claps
+    createClap(0.0);
+    createClap(0.2);
+    createClap(0.4);
+    createClap(0.6);
+    createClap(0.8);
   };
 
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
@@ -169,8 +162,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const rect = canvas.getBoundingClientRect();
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
-    const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const x = clientX - rect.left - centerX;
     const y = clientY - rect.top - centerY;
     const angle = Math.atan2(y, x);
@@ -190,8 +183,8 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const rect = canvas.getBoundingClientRect();
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    const clientX = 'clientX' in e ? e.clientX : e.touches[0].clientX;
-    const clientY = 'clientY' in e ? e.clientY : e.touches[0].clientY;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const x = clientX - rect.left - centerX;
     const y = clientY - rect.top - centerY;
     const angle = Math.atan2(y, x);
@@ -232,8 +225,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const startRotation = rotation;
     const startTime = performance.now();
 
-    startTickingSound(200); // Start ticking sound with an initial interval
-
     const animate = (time: number) => {
       const elapsed = time - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
@@ -245,8 +236,6 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
-        stopTickingSound(); // Stop ticking sound when the wheel stops
-
         const finalRotation = (currentRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
         const selectedIndex = Math.floor(((threeOClockAngle - finalRotation + 2 * Math.PI) % (2 * Math.PI)) / anglePerSegment) % numSegments;
 
@@ -257,8 +246,9 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
         setIsSpinning(false);
         setCurrentDragSpeed(0);
 
-        // Trigger confetti effect when the wheel stops
+        // Trigger confetti effect and play cheering sound when the wheel stops
         triggerConfetti();
+        playClappingAndCheeringSound();
       }
     };
 
