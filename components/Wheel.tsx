@@ -100,40 +100,52 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     ctx.fillText('Meals', centerX, centerY + 20);
   };
 
-  const createTickSound = () => {
+  const createWheelSound = () => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
 
     const context = audioContextRef.current;
-    const oscillator = context.createOscillator();
-    const gainNode = context.createGain();
-    
-    // Use white noise burst to simulate the mechanical "tick" sound
-    const bufferSize = context.sampleRate * 0.1; // 0.1 seconds buffer
-    const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
-    const data = buffer.getChannelData(0);
 
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1; // White noise
+    // Create a noise burst to simulate the clicking sound
+    const noiseBuffer = context.createBuffer(1, context.sampleRate * 0.02, context.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseBuffer.length; i++) {
+      output[i] = (Math.random() * 2 - 1) * 0.3; // White noise, lower volume for a softer tick
     }
 
-    const noise = context.createBufferSource();
-    noise.buffer = buffer;
-    noise.connect(gainNode);
-    gainNode.connect(context.destination);
-    gainNode.gain.setValueAtTime(0.05, context.currentTime); // Adjust volume
-    
-    noise.start();
-    noise.stop(context.currentTime + 0.05); // Play sound for 50 milliseconds
+    const noiseSource = context.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+
+    const noiseGain = context.createGain();
+    noiseGain.gain.setValueAtTime(0.2, context.currentTime);
+
+    // Add a lower-frequency click for a fuller sound
+    const clickOscillator = context.createOscillator();
+    clickOscillator.type = 'triangle'; // Triangle wave for a richer click sound
+    clickOscillator.frequency.setValueAtTime(100, context.currentTime); // Lower frequency for a thicker sound
+
+    const clickGain = context.createGain();
+    clickGain.gain.setValueAtTime(0.2, context.currentTime);
+    clickGain.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1); // Quickly fade out
+
+    // Connect all components to create a layered sound
+    noiseSource.connect(noiseGain).connect(context.destination);
+    clickOscillator.connect(clickGain).connect(context.destination);
+
+    noiseSource.start();
+    clickOscillator.start();
+
+    noiseSource.stop(context.currentTime + 0.02); // Short duration for the noise burst
+    clickOscillator.stop(context.currentTime + 0.1); // Longer duration for the low click
   };
 
   const startTickingSound = (initialInterval: number) => {
     let currentInterval = initialInterval;
 
     const tick = () => {
-      createTickSound();
-      currentInterval = Math.max(50, currentInterval * 0.95); // Gradually decrease the interval for speeding up effect
+      createWheelSound();
+      currentInterval = Math.max(50, currentInterval * 0.95); // Decrease interval to simulate speeding up
 
       tickIntervalRef.current = window.setTimeout(tick, currentInterval);
     };
