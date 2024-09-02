@@ -1,11 +1,9 @@
-import confetti from 'canvas-confetti';
+import confetti from 'canvas-confetti'; // Correctly import the confetti module
 
-const triggerConfetti = () => {
+export const triggerConfetti = (): void => {
   confetti({
     particleCount: 100,
     spread: 70,
     origin: { y: 0.6 }
   });
 };
-
-export default triggerConfetti;
