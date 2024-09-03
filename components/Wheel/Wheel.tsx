@@ -23,12 +23,18 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
     const [startAngle, setStartAngle] = useState(0);
     const [lastTime, setLastTime] = useState(0);
     const [currentDragSpeed, setCurrentDragSpeed] = useState(0);
+    const [slideIn, setSlideIn] = useState(false); // New state for slide-in effect
 
     const audioContextRef = useRef<AudioContext | null>(null);
 
     useEffect(() => {
         drawWheel(canvasRef, restaurants, rotation, highlightedIndex, shortenName);
     }, [rotation, restaurants, highlightedIndex]);
+
+    // Trigger slide-in animation on component mount
+    useEffect(() => {
+        setSlideIn(true);
+    }, []);
 
     const handleMouseDownWrapper = (e: React.MouseEvent | React.TouchEvent) => {
         handleMouseDown(e, canvasRef, setIsDragging, setStartAngle, setLastTime, rotation);
@@ -69,14 +75,13 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
                     triggerConfetti,
                     () => playClappingAndCheeringSound(audioContextRef)
                 );
-            }, // Pass a valid function signature here
+            },
             currentDragSpeed
         );
     };
-    
 
     return (
-        <div className="flex flex-col items-center relative">
+        <div className={`flex flex-col items-center relative transition-transform duration-700 ${slideIn ? 'translate-x-0' : 'translate-x-full'}`}>
             <div className="absolute top-0 p-4 text-xl font-semibold text-black bg-white bg-opacity-75 rounded-lg" style={{ marginTop: '-60px' }}>
                 Grab the wheel and give it a spin
             </div>
