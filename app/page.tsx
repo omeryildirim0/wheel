@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Wheel from '../components/Wheel/Wheel';
+import Wheel from '@/components/Wheel/Wheel';
 import SearchBar from '@/components/SearchBar';
 import useSearch from '@/hooks/useSearch';
 import Navbar from '@/components/Navbar';
