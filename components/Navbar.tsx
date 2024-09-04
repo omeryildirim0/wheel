@@ -1,5 +1,8 @@
+"use client"; // Ensure the Navbar is a client component if it uses client-side hooks or context
+
 import React from 'react';
 import Link from 'next/link';
+import ThemeToggleButton from './ThemeToggleButton'; // Adjust the import path if needed
 
 const Navbar: React.FC = () => {
   return (
@@ -14,13 +17,16 @@ const Navbar: React.FC = () => {
         </a>
 
         {/* Navigation Links */}
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden md:flex space-x-8 items-center">
           <Link href="/blog" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
             Blog
           </Link>
           <Link href="/about" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
             About Us
           </Link>
+          
+          {/* Theme Toggle Button */}
+          <ThemeToggleButton />
         </div>
 
         {/* Mobile Menu */}
