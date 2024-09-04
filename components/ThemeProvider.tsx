@@ -1,14 +1,22 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+"use client"; // Add this line at the top
 
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+
+// Define the type for the theme context
 interface ThemeContextType {
   theme: string;
   toggleTheme: () => void;
 }
 
+// Set the default value for the theme context
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState('light');
+interface ThemeProviderProps {
+  children: ReactNode; // Type for children
+}
+
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+  const [theme, setTheme] = useState<string>('light');
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
