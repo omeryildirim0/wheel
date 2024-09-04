@@ -29,7 +29,8 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
         value={zipcode}
         onChange={(e) => setZipcode(e.target.value)}
         placeholder="Enter Zip Code"
-        className="p-2 border border-gray-300 rounded-md w-2/3 focus:outline-none focus:border-blue-500"
+        className="p-2 border border-gray-300 rounded-md w-2/3 focus:outline-none focus:border-blue-500
+                   bg-white text-black dark:bg-gray-800 dark:text-white transition duration-200"
       />
       <button
         onClick={handleSearch}
