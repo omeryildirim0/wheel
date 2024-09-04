@@ -1,4 +1,3 @@
-// RestaurantCard.tsx
 import React from 'react';
 
 interface Restaurant {
@@ -6,7 +5,7 @@ interface Restaurant {
   photoUrl: string;
   rating: number;
   address: string;
-  url: string; // Ensure this field is included
+  url: string;
 }
 
 interface RestaurantCardProps {
@@ -19,7 +18,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
       href={restaurant.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block p-4 bg-white rounded-lg shadow-md max-w-md w-full hover:bg-gray-100 transition-colors duration-200"
+      className="block p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md max-w-md w-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
     >
       {restaurant.photoUrl && (
         <img
@@ -28,9 +27,9 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
           className="w-full h-48 object-cover rounded-md mb-4"
         />
       )}
-      <h2 className="text-xl font-bold mb-2">{restaurant.name}</h2>
-      <p className="text-gray-700 mb-2">Rating: {restaurant.rating}</p>
-      <p className="text-gray-600">{restaurant.address}</p>
+      <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{restaurant.name}</h2>
+      <p className="text-gray-700 dark:text-gray-300 mb-2">Rating: {restaurant.rating}</p>
+      <p className="text-gray-600 dark:text-gray-400">{restaurant.address}</p>
     </a>
   );
 };
