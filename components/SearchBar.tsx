@@ -22,12 +22,19 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
     onSearch(zipcode);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="mb-6">
       <input
         type="text"
         value={zipcode}
         onChange={(e) => setZipcode(e.target.value)}
+        onKeyDown={handleKeyDown} // Add this line to handle the Enter key
         placeholder="Enter Zip Code"
         className="p-2 border border-gray-300 rounded-md w-2/3 focus:outline-none focus:border-blue-500
                    bg-white text-black dark:bg-gray-800 dark:text-white transition duration-200"
