@@ -1,7 +1,7 @@
 "use client"; // Ensure this component is treated as a client component
 
 import React from 'react';
-import { useTheme } from '../components/ThemeProvider'; // Adjust the import path as needed
+import { useTheme } from '../components/ThemeProvider'; 
 
 const ThemeToggleButton: React.FC = () => {
   const { theme, toggleTheme } = useTheme();

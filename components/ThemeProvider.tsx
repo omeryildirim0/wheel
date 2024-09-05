@@ -16,13 +16,17 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<string>('light');
+  // Set default theme to 'dark'
+  const [theme, setTheme] = useState<string>('dark');
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
     if (storedTheme) {
       setTheme(storedTheme);
       document.documentElement.classList.add(storedTheme);
+    } else {
+      // Apply the default theme 'dark' if no stored theme is found
+      document.documentElement.classList.add('dark');
     }
   }, []);
 
