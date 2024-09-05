@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "../components/ThemeProvider"; // Adjust the import path as needed
+import { ThemeProvider } from "next-themes"; // Import from next-themes
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,9 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ThemeProvider>
+    // Ensure no whitespace around <html> tag
+    <html lang="en" className={inter.className} suppressHydrationWarning>
+      {/* Avoid whitespace between <html> and <head> */}
+      <head></head>
+      <body>
+        {/* Wrap children with ThemeProvider without extra whitespace */}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={true}>
           {children}
         </ThemeProvider>
       </body>

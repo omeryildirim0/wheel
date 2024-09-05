@@ -1,10 +1,25 @@
-"use client"; // Ensure this component is treated as a client component
+"use client";
 
-import React from 'react';
-import { useTheme } from '../components/ThemeProvider'; 
+import React, { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 const ThemeToggleButton: React.FC = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Ensures the component is mounted in the client before rendering the theme button
+    setMounted(true);
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  // Prevent rendering on the server side
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <button
