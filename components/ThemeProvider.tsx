@@ -9,7 +9,7 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="dark">
+    <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem={true}>
       {children}
     </NextThemesProvider>
   );

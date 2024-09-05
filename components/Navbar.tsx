@@ -1,4 +1,4 @@
-"use client"; // Ensure the Navbar is a client component if it uses client-side hooks or context
+"use client"; // Ensure the Navbar is a client component
 
 import React from 'react';
 import Link from 'next/link';
