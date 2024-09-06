@@ -32,7 +32,12 @@ export const drawWheel = (
     const endAngle = startAngle + anglePerSegment;
     const isHighlighted = i === highlightedIndex;
 
-    ctx.fillStyle = segmentColors[i % segmentColors.length];
+    // Gradient for the segment
+    const gradient = ctx.createRadialGradient(centerX, centerY, radius * 0.7, centerX, centerY, radius);
+    gradient.addColorStop(0, segmentColors[i % segmentColors.length]);
+    gradient.addColorStop(1, '#333'); // Darker color for 3D effect
+
+    ctx.fillStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -45,25 +50,33 @@ export const drawWheel = (
 
     const shortName = shortenName(restaurant.name);
 
+    ctx.textAlign = 'right';
     if (isHighlighted) {
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#FFFFFF';
       ctx.font = 'bold 20px Arial';
-      ctx.shadowColor = 'white';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
       ctx.shadowBlur = 10;
     } else {
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = '#FFFFFF';
       ctx.font = '16px Arial';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      ctx.shadowBlur = 5;
     }
-
-    ctx.textAlign = 'right';
     ctx.fillText(shortName, radius - 10, 10);
     ctx.restore();
   });
 
-  ctx.fillStyle = '#FFCC00';
+  // Draw central circle for a more 3D effect
+  const centerGradient = ctx.createRadialGradient(centerX, centerY, radius / 8, centerX, centerY, radius / 4);
+  centerGradient.addColorStop(0, '#FFFFFF');
+  centerGradient.addColorStop(1, '#FFCC00');
+
+  ctx.fillStyle = centerGradient;
   ctx.beginPath();
   ctx.arc(centerX, centerY, radius / 4, 0, 2 * Math.PI);
   ctx.fill();
+
+  // Text in the center
   ctx.fillStyle = 'blue';
   ctx.font = 'bold 24px Arial';
   ctx.textAlign = 'center';
