@@ -1,10 +1,16 @@
 "use client"; // Ensure the Navbar is a client component
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import ThemeToggleButton from './ThemeToggleButton'; // Adjust the import path if needed
 
 const Navbar: React.FC = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md py-4 fixed top-0 left-0 w-full z-10">
       <div className="max-w-screen-xl mx-auto px-6 flex justify-between items-center">
@@ -16,7 +22,7 @@ const Navbar: React.FC = () => {
           Wheel of Meals
         </a>
 
-        {/* Navigation Links */}
+        {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-8 items-center">
           <Link href="/blog" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
             Blog
@@ -29,9 +35,12 @@ const Navbar: React.FC = () => {
           <ThemeToggleButton />
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
-          <button className="text-gray-600 dark:text-gray-300 focus:outline-none">
+          <button
+            onClick={toggleMobileMenu}
+            className="text-gray-600 dark:text-gray-300 focus:outline-none"
+          >
             {/* Icon for mobile menu toggle */}
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -39,6 +48,21 @@ const Navbar: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden px-6 py-4 space-y-4">
+          <Link href="/blog" className="block text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
+            Blog
+          </Link>
+          <Link href="/about" className="block text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
+            About Us
+          </Link>
+          
+          {/* Theme Toggle Button */}
+          <ThemeToggleButton />
+        </div>
+      )}
     </nav>
   );
 };
