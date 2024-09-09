@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-md py-4 fixed top-0 left-0 w-full z-150">
+    <nav className="bg-white dark:bg-gray-800 shadow-md py-4 relative top-0 left-0 w-full z-150">
       <div className="max-w-screen-xl mx-auto px-6 flex justify-between items-center">
         {/* Homepage Link */}
         <a
