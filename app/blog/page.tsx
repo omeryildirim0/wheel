@@ -21,10 +21,8 @@ async function getPosts() {
 }
 
 
-const blog = () => {
+export default function blog () {
   return (
     <div>blog</div>
   )
 }
-
-export default blog
