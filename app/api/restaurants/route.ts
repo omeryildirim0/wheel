@@ -36,7 +36,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({ error: 'Zipcode is required' }, { status: 400 });
   }
 
-  const googlePlacesApiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY;
+  const googlePlacesApiKey = process.env.GOOGLE_PLACES_API_KEY;
 
   if (!googlePlacesApiKey) {
     return NextResponse.json({ error: 'Internal Server Error: Missing Google Places API Key' }, { status: 500 });
