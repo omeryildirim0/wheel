@@ -1,6 +1,8 @@
 import React from 'react'
 import { client } from "@/sanity/lib/client";
 import Header from '@/components/Header';
+//import PostComponent from '@/components/PostComponent';
+import { Post } from '@/lib/interface';
 
 
 async function getPosts() {
@@ -23,11 +25,16 @@ async function getPosts() {
 
 
 export default async function blog () {
-  const posts = await getPosts();
+  const posts: Post[] = await getPosts();
 
   return (
     <div>
-      <Header title="Articles" />
+      <Header title="Articles"/>
+      <div>
+        {posts?.length > 0 &&
+          posts?.map((post) => <p key={post?._id}> {post.title}</p>)}
+      </div>
     </div>
+    
   )
 }
