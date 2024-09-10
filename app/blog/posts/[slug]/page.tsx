@@ -70,8 +70,8 @@ export async function generateMetadata({
       description: post.excerpt,
       type: "article",
       locale: "en_US",
-      url: `https://next-cms-blog-ce.vercel.app/${params.slug}`,
-      siteName: "DevBlook",
+      url: `https://localhost:3000/${params.slug}`,
+      siteName: "Wheel of Meals",
       images: [
         // {
         //   url: post.image,
