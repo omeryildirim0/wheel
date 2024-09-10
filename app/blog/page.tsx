@@ -1,5 +1,6 @@
 import React from 'react'
 import { client } from "@/sanity/lib/client";
+import Header from '@/components/Header';
 
 
 async function getPosts() {
@@ -25,6 +26,8 @@ export default async function blog () {
   const posts = await getPosts();
 
   return (
-    <div>blog</div>
+    <div>
+      <Header title="Articles" />
+    </div>
   )
 }
