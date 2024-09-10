@@ -21,7 +21,9 @@ async function getPosts() {
 }
 
 
-export default function blog () {
+export default async function blog () {
+  const posts = await getPosts();
+
   return (
     <div>blog</div>
   )
