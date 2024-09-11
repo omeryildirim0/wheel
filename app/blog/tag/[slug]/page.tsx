@@ -1,49 +1,60 @@
 import Header from "@/components/Header";
-import Navbar from "@/components/Navbar";
-import { Tag } from "@/lib/interface";
+import PostComponent from "@/components/PostComponent";
+import { Post } from "@/lib/interface";
 import { client } from "@/sanity/lib/client";
-import { Metadata } from "next";
-import Link from "next/link";
 import React from "react";
 
-async function getAllTags() {
+async function getPostsByTag(tag: string) {
   const query = `
-  *[_type == "tag"] {
-    name,
+  *[_type == "post" && references(*[_type == "tag" && slug.current == "${tag}"]._id)]{
+    title,
     slug,
-    _id,
-    "postCount": count(*[_type == "post" && references("tags", ^._id)])
+    publishedAt,
+    excerpt,
+    tags[]-> {
+      _id,
+      slug,
+      name
+    }
   }
   `;
-  const tags = client.fetch(query);
-  return tags;
+
+  const posts = await client.fetch(query);
+  return posts;
 }
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Tags",
-  // title: {
-  //   absolute: "TAGS",
-  // },
-  description: "Search for posts by tags on the blog"
+export async function generateMetadata({ params }: Params) {
+  return {
+    title: `#${params.slug}`,
+    description: `Posts with the tag ${params.slug}`,
+    openGraph: {
+      title: `#${params.slug}`,
+      description: `Posts with the tag ${params.slug}`,
+      type: "website",
+      locale: "en_US",
+      url: `localhost:3000/${params.slug}`,
+      siteName: "Wheel of Meals",
+    },
+  };
 }
 
-const page = async () => {
-  const tags: Tag[] = await getAllTags();
-  console.log(tags, "tags");
+interface Params {
+  params: {
+    slug: string;
+  };
+}
+
+const page = async ({ params }: Params) => {
+  const posts: Array<Post> = await getPostsByTag(params.slug);
+  console.log(posts, "posts by tag");
   return (
     <div>
-      <Header title="Tags" />
+      <Header title={`#${params?.slug}`} tags />
       <div>
-        {tags?.length > 0 &&
-          tags?.map((tag) => (
-            <Link key={tag?._id} href={`/tag/${tag.slug.current}`}>
-              <div className="mb-2 p-2 text-sm lowercase dark:bg-gray-950 border dark:border-gray-900 hover:text-purple-500">
-                #{tag.name} ({tag?.postCount})
-              </div>
-            </Link>
-          ))}
+        {posts?.length > 0 &&
+          posts?.map((post) => <PostComponent key={post?._id} post={post} />)}
       </div>
     </div>
   );
