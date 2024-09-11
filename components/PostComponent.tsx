@@ -13,7 +13,7 @@ const dateFont = VT323({weight: "400", subsets: ["latin"]})
 const PostComponent = ({post}: Props) => {
   return (
     <div className={cardStyle}>
-      <Link href={`blog/posts/${post?.slug?.current}`}>
+      <Link href={`/blog/posts/${post?.slug?.current}`}>
         <h2 className={`${font.className} text-2xl dark:text-slate-300`}>{post?.title}</h2>
         <p className={`${dateFont.className} my-2 text-purple-800`}>{new Date(post?.publishedAt).toDateString()}</p>
         <p className='dark:text-gray-400 mb-4 line-clamp-2'>{post?.excerpt}</p>
