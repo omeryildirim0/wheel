@@ -25,7 +25,7 @@ const ThemeToggleButton: React.FC = () => {
       onClick={toggleTheme}
       className="p-2 rounded-md bg-gray-200 dark:bg-gray-800 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-gray-700 transition duration-300"
     >
-      {theme === 'light' ? '🌜 Switch to Dark Mode' : '🌞 Switch to Light Mode'}
+      {theme === 'light' ? '🌜 Dark Mode' : '🌞 Light Mode'}
     </button>
   );
 };
