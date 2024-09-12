@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
             Blog
           </Link>
           <Link href="/about" className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition duration-300 ease-in-out">
-            About Us
+            About
           </Link>
           
           {/* Theme Toggle Button */}
