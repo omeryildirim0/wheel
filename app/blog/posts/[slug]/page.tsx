@@ -145,7 +145,7 @@ const myPortableTextComponents = {
     h2: ({ value }: any) => (
       <h2
         id={slugify(value.children[0].text)}
-        className="text-3xl font-bold mb-3"
+        className="text-3xl font-bold mb-0 mt-3"
       >
         {value.children[0].text}
       </h2>
@@ -153,7 +153,7 @@ const myPortableTextComponents = {
     h3: ({ value }: any) => (
       <h3
         id={slugify(value.children[0].text)}
-        className="text-2xl font-bold mb-3"
+        className="text-2xl font-bold mb-0 mt-3"
       >
         {value.children[0].text}
       </h3>
@@ -161,7 +161,7 @@ const myPortableTextComponents = {
     h4: ({ value }: any) => (
       <h4
         id={slugify(value.children[0].text)}
-        className="text-2xl font-bold mb-3"
+        className="text-2xl font-bold mb-0 mt-3"
       >
         {value.children[0].text}
       </h4>
@@ -169,7 +169,7 @@ const myPortableTextComponents = {
     h5: ({ value }: any) => (
       <h5
         id={slugify(value.children[0].text)}
-        className="text-2xl font-bold mb-3"
+        className="text-2xl font-bold mb-0 mt-3"
       >
         {value.children[0].text}
       </h5>
@@ -177,7 +177,7 @@ const myPortableTextComponents = {
     h6: ({ value }: any) => (
       <h6
         id={slugify(value.children[0].text)}
-        className="text-xl font-bold mb-3"
+        className="text-xl font-bold mb-0 mt-3"
       >
         {value.children[0].text}
       </h6>
