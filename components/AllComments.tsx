@@ -17,7 +17,7 @@ const AllComments = ({ comments, slug, commentsOrder }: Props) => {
         <div className="mb-2">
           <Link
             scroll={false}
-            href={`/posts/${slug}?comments=asc`}
+            href={`/blog/posts/${slug}?comments=asc`}
             className={`mr-4 text-sm ${
               commentsOrder === "asc" ? "text-purple-500" : ""
             }`}
@@ -26,7 +26,7 @@ const AllComments = ({ comments, slug, commentsOrder }: Props) => {
           </Link>
           <Link
             scroll={false}
-            href={`/posts/${slug}?comments=desc`}
+            href={`/blog/posts/${slug}?comments=desc`}
             className={`mr-4 text-sm ${
               commentsOrder === "desc" ? "text-purple-500" : ""
             }`}
