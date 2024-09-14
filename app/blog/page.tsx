@@ -31,7 +31,7 @@ export default async function blog () {
   return (
     <div>
       <Header title="Articles"/>
-      <div>
+      <div className="max-w-2xl mx-auto w-full p-4">
         {posts?.length > 0 &&
           posts?.map((post) => <PostComponent key={post?._id} post={post} />)}
       </div>
