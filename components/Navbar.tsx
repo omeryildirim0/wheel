@@ -1,8 +1,8 @@
-"use client"; // Ensure the Navbar is a client component
+"use client"; 
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import ThemeToggleButton from './ThemeToggleButton'; // Adjust the import path if needed
+import ThemeToggleButton from './ThemeToggleButton'; 
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
