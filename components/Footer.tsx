@@ -1,9 +1,8 @@
-// Footer.tsx
 import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white py-4">
+    <footer className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 dark:bg-gradient-to-r dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 text-white py-4">
       <div className="container mx-auto text-center">
         {/* Navigation Links */}
         <div className="mb-2">
