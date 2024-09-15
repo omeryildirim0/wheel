@@ -6,9 +6,15 @@ import ThemeToggleButton from './ThemeToggleButton';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleSpinClick = () => {
+    setIsSpinning(true);
+    setTimeout(() => setIsSpinning(false), 1500); // Reset spin after 1.5 seconds
   };
 
   return (
@@ -17,8 +23,11 @@ const Navbar: React.FC = () => {
         {/* Homepage Link */}
         <a
           href="/"
-          className="text-3xl font-extrabold text-white transform hover:scale-105 hover:text-yellow-300 transition duration-300 ease-in-out cursor-pointer shadow-lg"
+          className={`text-3xl font-extrabold text-white transform transition duration-300 ease-in-out cursor-pointer shadow-lg ${
+            isSpinning ? 'animate-spin-multiple' : 'hover:scale-105 hover:text-yellow-300'
+          }`}
           style={{ fontFamily: "'Poppins', sans-serif" }}
+          onClick={handleSpinClick}
         >
           Wheel of Meals
         </a>

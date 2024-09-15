@@ -67,3 +67,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes spin-multiple {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(1080deg); /* 3 full rotations (360 degrees * 3) */
+  }
+}
+
+.animate-spin-multiple {
+  animation: spin-multiple 1.5s ease-in-out; /* Adjust duration to 1.5 seconds for smoother effect */
+}
+
