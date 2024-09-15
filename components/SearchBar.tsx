@@ -29,19 +29,20 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 flex justify-center items-center">
       <input
         type="text"
         value={zipcode}
         onChange={(e) => setZipcode(e.target.value)}
-        onKeyDown={handleKeyDown} // Add this line to handle the Enter key
+        onKeyDown={handleKeyDown}
         placeholder="Enter Zip Code"
-        className="p-2 border border-gray-300 rounded-md w-2/3 focus:outline-none focus:border-blue-500
-                   bg-white text-black dark:bg-gray-800 dark:text-white transition duration-200"
+        className="p-3 border border-gray-300 rounded-full shadow-sm w-2/3 focus:outline-none focus:border-indigo-500
+                   bg-white text-black dark:bg-gray-800 dark:text-white transition duration-200 ease-in-out"
       />
       <button
         onClick={handleSearch}
-        className="ml-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+        className="ml-3 px-4 py-3 bg-indigo-500 text-white rounded-full shadow-md hover:bg-indigo-600 
+                   transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-400"
       >
         Search
       </button>
