@@ -1,8 +1,8 @@
-"use client";
+"use client"; // Ensure the Navbar is a client component
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import ThemeToggleButton from './ThemeToggleButton'; 
+import ThemeToggleButton from './ThemeToggleButton'; // Adjust the import path if needed
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,7 +17,8 @@ const Navbar: React.FC = () => {
         {/* Homepage Link */}
         <a
           href="/"
-          className="text-2xl font-bold text-white cursor-pointer"
+          className="text-3xl font-extrabold text-white transform hover:scale-105 hover:text-yellow-300 transition duration-300 ease-in-out cursor-pointer shadow-lg"
+          style={{ fontFamily: "'Poppins', sans-serif" }}
         >
           Wheel of Meals
         </a>
