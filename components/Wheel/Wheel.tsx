@@ -102,7 +102,7 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
                 onTouchEnd={handleMouseUpWrapper}
             ></canvas>
             {selectedRestaurant && (
-                <div className="mt-4">
+                <div className="mt-4 mb-4">
                     <RestaurantCard restaurant={selectedRestaurant} />
                 </div>
             )}
