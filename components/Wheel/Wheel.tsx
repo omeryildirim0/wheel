@@ -82,7 +82,10 @@ const Wheel: React.FC<WheelProps> = ({ restaurants }) => {
 
     return (
         <div className={`flex flex-col items-center relative transition-transform duration-700 ${slideIn ? 'translate-x-0' : 'translate-x-full'}`}>
-            <div className="absolute top-0 p-4 text-xl font-semibold text-black bg-white bg-opacity-75 rounded-lg" style={{ marginTop: '-60px' }}>
+            <div 
+                className="absolute top-0 p-4 text-xl font-bold text-yellow-600 animate-pulse bg-white bg-opacity-75 rounded-lg"
+                style={{ marginTop: '-60px' }}
+            >
                 Grab the wheel and give it a spin
             </div>
             <canvas
