@@ -23,7 +23,7 @@ const Navbar: React.FC = () => {
         {/* Homepage Link */}
         <a
           href="/"
-          className={`text-3xl font-extrabold text-white transform transition duration-300 ease-in-out cursor-pointer shadow-lg ${
+          className={`text-3xl font-extrabold text-white transform transition duration-300 ease-in-out cursor-pointer ${
             isSpinning ? 'animate-spin-multiple' : 'hover:scale-105 hover:text-yellow-300'
           }`}
           style={{ fontFamily: "'Poppins', sans-serif" }}
