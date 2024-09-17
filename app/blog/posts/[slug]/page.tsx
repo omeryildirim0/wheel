@@ -70,7 +70,7 @@ export async function generateMetadata({
       description: post.excerpt,
       type: "article",
       locale: "en_US",
-      url: `https://localhost:3000/${params.slug}`,
+      url: `https://www.wheelofmeals.com/${params.slug}`,
       siteName: "Wheel of Meals",
       images: [
         // {
