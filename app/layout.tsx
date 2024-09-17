@@ -7,13 +7,11 @@ import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
-// root layout.tsx
-
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Wheel of Meals - Find Your Next Meal Adventure',
   description: 'Spin the wheel to discover amazing restaurant options near you with the Wheel of Meals app. Perfect for those who can’t decide where to eat!',
   keywords: 'restaurant, food, meal, dining, eat out, restaurant finder, food wheel, Wheel of Meals, lunch, dinner, next meal, random restaurant picker, explore cuisine',
-  author: 'Omer Yildirim',
+  authors: [{ name: 'Omer Yildirim' }], // Corrected property
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -40,9 +38,11 @@ export const metadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    appleTouchIcon: '/apple-touch-icon.png',
+    apple: '/apple-touch-icon.png',
   },
 };
+
+
 
 
 export default function RootLayout({
