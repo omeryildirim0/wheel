@@ -23,7 +23,7 @@ export const metadata = {
     siteName: 'Wheel of Meals',
     images: [
       {
-        url: 'https://www.wheelofmeals.com/images/og-image.jpg',
+        url: 'https://www.wheelofmeals.com/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Wheel of Meals Logo',
@@ -36,7 +36,7 @@ export const metadata = {
     creator: '@omeryildirim',
     title: 'Wheel of Meals - Find Your Next Meal Adventure',
     description: 'Let the Wheel of Meals choose your next restaurant! Spin the wheel and explore great dining options nearby.',
-    images: ['https://www.wheelofmeals.com/images/og-image.jpg'],
+    images: ['https://www.wheelofmeals.com/og-image.jpg'],
   },
   icons: {
     icon: '/favicon.ico',
