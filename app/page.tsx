@@ -17,8 +17,9 @@ const Home = () => {
 
   return (
     <div className="max-w-full mx-auto p-0">
+      <HeaderMain />
       <div className="max-w-lg mx-auto text-center mt-20">
-        <HeaderMain />
+        
         <h1 className="text-2xl font-bold mt-5 mb-6">Find Restaurants</h1>
         <SearchBar onSearch={onSearch} />
 
