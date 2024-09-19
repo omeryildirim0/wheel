@@ -1,6 +1,6 @@
 import React from 'react';
 import { client } from "@/sanity/lib/client";
-import PaginationBlog from '@/components/PaginationBlog';  // Create this component for pagination logic
+import PaginationBlog from '@/components/PaginationBlog';  
 import Header from '@/components/Header';
 import { Post } from '@/lib/interface';
 
@@ -26,7 +26,7 @@ async function getPosts() {
 export const revalidate = 60;
 
 export default async function Blog() {
-  const posts: Post[] = await getPosts();  // Fetch data on the server
+  const posts: Post[] = await getPosts();  
 
   return (
     <div>
