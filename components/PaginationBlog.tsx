@@ -1,4 +1,4 @@
-"use client";  // Mark this component as a Client Component
+"use client";  
 
 import React, { useState } from 'react';
 import PostComponent from '@/components/PostComponent';

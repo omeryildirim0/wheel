@@ -1,13 +1,13 @@
-import React from 'react'
+import React from 'react';
 import { client } from "@/sanity/lib/client";
+import PaginationBlog from '@/components/PaginationBlog';  // Create this component for pagination logic
 import Header from '@/components/Header';
-import PostComponent from '@/components/PostComponent';
 import { Post } from '@/lib/interface';
-
 
 async function getPosts() {
   const query = `
   *[_type == "post"] {
+    _id,
     title,
     slug,
     publishedAt,
@@ -25,17 +25,16 @@ async function getPosts() {
 
 export const revalidate = 60;
 
-export default async function blog () {
-  const posts: Post[] = await getPosts();
+export default async function Blog() {
+  const posts: Post[] = await getPosts();  // Fetch data on the server
 
   return (
     <div>
-      <Header title="Articles"/>
+      <Header title="Articles" />
       <div className="max-w-2xl mx-auto w-full p-4">
-        {posts?.length > 0 &&
-          posts?.map((post) => <PostComponent key={post?._id} post={post} />)}
+        {/* Pass the posts data to the client-side PaginationBlog component */}
+        <PaginationBlog posts={posts} />
       </div>
     </div>
-    
-  )
+  );
 }
