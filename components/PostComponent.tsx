@@ -21,11 +21,14 @@ const PostComponent = ({post}: Props) => {
 
       {/* TAGS */}
 
-      <div>
+      <div className="flex flex-wrap gap-2">
         {post?.tags?.map((tag) => (
-          <span key={tag?._id} className='mr-2 p-1 rounded-sm text-sm lowercase dark:bg-gray-950 border dark:border-gray-900'>#{tag?.name}</span>
+          <span key={tag?._id} className='mr-2 p-1 rounded-sm text-sm lowercase dark:bg-gray-950 border dark:border-gray-900'>
+            #{tag?.name}
+          </span>
         ))}
       </div>
+
     </div>
   )
 }
