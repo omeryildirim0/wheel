@@ -28,7 +28,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
         />
       )}
       <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{restaurant.name}</h2>
-      <p className="text-gray-700 dark:text-gray-300 mb-2">Rating: {restaurant.rating}</p>
+      <p className="text-gray-700 dark:text-gray-300 mb-2">Google Rating: {restaurant.rating}</p>
       <p className="text-gray-600 dark:text-gray-400">{restaurant.address}</p>
     </a>
   );
