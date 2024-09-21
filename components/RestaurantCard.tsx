@@ -1,4 +1,5 @@
 import React from 'react';
+import { Star } from "lucide-react";
 
 interface Restaurant {
   name: string;
