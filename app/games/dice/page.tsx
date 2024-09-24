@@ -3,9 +3,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
+// Dice emojis corresponding to numbers 1-6
+const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
 const LuckOfTheDice = () => {
   const [playerCount, setPlayerCount] = useState<number>(2); // Default to 2 players
-  const [playerRolls, setPlayerRolls] = useState<number[]>(Array(2).fill(null)); // Array of rolls for each player
+  const [playerRolls, setPlayerRolls] = useState<(number | null)[]>(Array(2).fill(null)); // Array of rolls for each player
+  const [rolling, setRolling] = useState<number | null>(null); // Track which player is currently rolling
   const [result, setResult] = useState<string | null>(null);
 
   const handlePlayerCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,19 +17,27 @@ const LuckOfTheDice = () => {
     setPlayerCount(newPlayerCount);
     setPlayerRolls(Array(newPlayerCount).fill(null)); // Reset the rolls array based on player count
     setResult(null);
+    setRolling(null); // Reset rolling status
   };
 
   const rollDiceForPlayer = (index: number) => {
-    const newRolls = [...playerRolls];
-    newRolls[index] = Math.floor(Math.random() * 6) + 1;
-    setPlayerRolls(newRolls);
+    setRolling(index); // Mark the player as rolling
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 6) + 1;
+      const newRolls = [...playerRolls];
+      newRolls[index] = roll;
+      setPlayerRolls(newRolls);
+      setRolling(null); // Stop rolling animation
 
-    // Check if all players have rolled
-    if (newRolls.every(roll => roll !== null)) {
-      const lowestRoll = Math.min(...newRolls);
-      const playerToPay = newRolls.indexOf(lowestRoll) + 1;
-      setResult(`Player ${playerToPay} pays for the meal with a roll of ${lowestRoll}!`);
-    }
+      // Check if all players have rolled (filter out nulls)
+      if (newRolls.every((roll) => roll !== null)) {
+        // Safely filter nulls and compute result
+        const validRolls = newRolls.filter((roll): roll is number => roll !== null);
+        const lowestRoll = Math.min(...validRolls); // Now TypeScript knows these are numbers
+        const playerToPay = newRolls.indexOf(lowestRoll) + 1;
+        setResult(`Player ${playerToPay} pays for the meal with a roll of ${lowestRoll}!`);
+      }
+    }, 1000); // Simulate a rolling delay of 1 second
   };
 
   return (
@@ -51,11 +63,27 @@ const LuckOfTheDice = () => {
         <ul className="space-y-4">
           {playerRolls.map((roll, index) => (
             <li key={index} className="flex items-center space-x-4">
-              <span className="text-lg">Player {index + 1}: {roll !== null ? roll : "Not rolled yet"}</span>
+              <span className="text-lg">Player {index + 1}: </span>
+
+              {/* Show rolling animation or dice face */}
+              {rolling === index ? (
+                <motion.span
+                  animate={{ rotate: [0, 360] }} // Simple rolling effect
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="text-3xl"
+                >
+                  🎲
+                </motion.span>
+              ) : (
+                <span className="text-4xl">{roll !== null ? diceFaces[roll - 1] : "❓"}</span>
+              )}
+
               <button
                 onClick={() => rollDiceForPlayer(index)}
-                className={`bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ${roll !== null ? "opacity-50 cursor-not-allowed" : ""}`}
-                disabled={roll !== null} // Disable button if player has already rolled
+                className={`bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ${
+                  roll !== null ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                disabled={roll !== null || rolling !== null} // Disable button if player has already rolled or another player is rolling
               >
                 {roll !== null ? "Rolled" : "Roll Dice"}
               </button>
