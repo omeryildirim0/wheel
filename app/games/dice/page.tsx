@@ -1,33 +1,31 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion"; // For animation
+import { motion } from "framer-motion";
 
 const LuckOfTheDice = () => {
   const [playerCount, setPlayerCount] = useState<number>(2); // Default to 2 players
-  const [playerRolls, setPlayerRolls] = useState<number[]>([]);
+  const [playerRolls, setPlayerRolls] = useState<number[]>(Array(2).fill(null)); // Array of rolls for each player
   const [result, setResult] = useState<string | null>(null);
-  const [rolling, setRolling] = useState<boolean>(false); // To manage animation state
 
   const handlePlayerCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPlayerCount(Number(e.target.value));
-    setPlayerRolls([]); // Reset the rolls if the player count changes
+    const newPlayerCount = Number(e.target.value);
+    setPlayerCount(newPlayerCount);
+    setPlayerRolls(Array(newPlayerCount).fill(null)); // Reset the rolls array based on player count
     setResult(null);
   };
 
-  const rollDice = () => {
-    setRolling(true); // Start the rolling animation
-    setTimeout(() => {
-      const rolls = Array.from({ length: playerCount }, () =>
-        Math.floor(Math.random() * 6) + 1
-      );
-      setPlayerRolls(rolls);
+  const rollDiceForPlayer = (index: number) => {
+    const newRolls = [...playerRolls];
+    newRolls[index] = Math.floor(Math.random() * 6) + 1;
+    setPlayerRolls(newRolls);
 
-      const lowestRoll = Math.min(...rolls);
-      const playerToPay = rolls.indexOf(lowestRoll) + 1;
+    // Check if all players have rolled
+    if (newRolls.every(roll => roll !== null)) {
+      const lowestRoll = Math.min(...newRolls);
+      const playerToPay = newRolls.indexOf(lowestRoll) + 1;
       setResult(`Player ${playerToPay} pays for the meal with a roll of ${lowestRoll}!`);
-      setRolling(false); // Stop the rolling animation
-    }, 1000); // Simulate a rolling delay of 1 second
+    }
   };
 
   return (
@@ -47,34 +45,24 @@ const LuckOfTheDice = () => {
         />
       </div>
 
-      <button
-        onClick={rollDice}
-        className={`bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 ${
-          rolling ? "opacity-50" : ""
-        }`}
-        disabled={rolling} // Disable button during rolling animation
-      >
-        {rolling ? "Rolling..." : "Roll the Dice"}
-      </button>
-
-      {playerRolls.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">Player Rolls:</h2>
-          <ul className="space-y-2">
-            {playerRolls.map((roll, index) => (
-              <motion.li
-                key={index}
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1.2 }}
-                transition={{ duration: 0.5 }}
-                className="text-lg"
+      {/* Player Rolls */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Player Rolls:</h2>
+        <ul className="space-y-4">
+          {playerRolls.map((roll, index) => (
+            <li key={index} className="flex items-center space-x-4">
+              <span className="text-lg">Player {index + 1}: {roll !== null ? roll : "Not rolled yet"}</span>
+              <button
+                onClick={() => rollDiceForPlayer(index)}
+                className={`bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ${roll !== null ? "opacity-50 cursor-not-allowed" : ""}`}
+                disabled={roll !== null} // Disable button if player has already rolled
               >
-                Player {index + 1}: {roll}
-              </motion.li>
-            ))}
-          </ul>
-        </div>
-      )}
+                {roll !== null ? "Rolled" : "Roll Dice"}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {result && (
         <motion.div
