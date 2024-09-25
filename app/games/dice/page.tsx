@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-// Custom dice faces (you can replace these with SVGs or images)
+// Custom dice faces for the game
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
 const LuckOfTheDice = () => {
