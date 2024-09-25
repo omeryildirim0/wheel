@@ -17,7 +17,7 @@ const GamesPage = () => {
         </Link>
 
         {/* Game 3 Link */}
-        <Link href="/games/luck-of-the-dice" className="text-indigo-600 hover:underline">
+        <Link href="/games/dice" className="text-indigo-600 hover:underline">
           Luck of the Dice
         </Link>
       </div>
