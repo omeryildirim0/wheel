@@ -59,7 +59,7 @@ const LuckOfTheDice = () => {
         <h2 className="text-xl font-semibold mb-4">Player Rolls:</h2>
         <ul className="space-y-4">
           {playerRolls.map((roll, index) => (
-            <li key={index} className="flex items-center space-x-4">
+            <li key={index} className="flex justify-between items-center space-x-6">
               <span className="text-lg">Player {index + 1}: </span>
 
               {rolling === index ? (
