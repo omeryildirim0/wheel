@@ -3,48 +3,46 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 
-// Dice emojis corresponding to numbers 1-6
+// Custom dice faces (you can replace these with SVGs or images)
 const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
 const LuckOfTheDice = () => {
-  const [playerCount, setPlayerCount] = useState<number>(2); // Default to 2 players
-  const [playerRolls, setPlayerRolls] = useState<(number | null)[]>(Array(2).fill(null)); // Array of rolls for each player
-  const [rolling, setRolling] = useState<number | null>(null); // Track which player is currently rolling
+  const [playerCount, setPlayerCount] = useState<number>(2);
+  const [playerRolls, setPlayerRolls] = useState<(number | null)[]>(Array(2).fill(null));
+  const [rolling, setRolling] = useState<number | null>(null);
   const [result, setResult] = useState<string | null>(null);
 
   const handlePlayerCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPlayerCount = Number(e.target.value);
     setPlayerCount(newPlayerCount);
-    setPlayerRolls(Array(newPlayerCount).fill(null)); // Reset the rolls array based on player count
+    setPlayerRolls(Array(newPlayerCount).fill(null));
     setResult(null);
-    setRolling(null); // Reset rolling status
+    setRolling(null);
   };
 
   const rollDiceForPlayer = (index: number) => {
-    setRolling(index); // Mark the player as rolling
+    setRolling(index);
+
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 6) + 1;
       const newRolls = [...playerRolls];
       newRolls[index] = roll;
       setPlayerRolls(newRolls);
-      setRolling(null); // Stop rolling animation
+      setRolling(null);
 
-      // Check if all players have rolled (filter out nulls)
       if (newRolls.every((roll) => roll !== null)) {
-        // Safely filter nulls and compute result
         const validRolls = newRolls.filter((roll): roll is number => roll !== null);
-        const lowestRoll = Math.min(...validRolls); // Now TypeScript knows these are numbers
+        const lowestRoll = Math.min(...validRolls);
         const playerToPay = newRolls.indexOf(lowestRoll) + 1;
         setResult(`Player ${playerToPay} pays for the meal with a roll of ${lowestRoll}!`);
       }
-    }, 1000); // Simulate a rolling delay of 1 second
+    }, 1500); // Longer delay for animation effect
   };
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
       <h1 className="text-3xl font-bold mb-6">Luck of the Dice</h1>
 
-      {/* Player count input */}
       <div className="mb-4">
         <label className="mr-2 text-lg">Number of Players:</label>
         <input
@@ -57,7 +55,6 @@ const LuckOfTheDice = () => {
         />
       </div>
 
-      {/* Player Rolls */}
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-4">Player Rolls:</h2>
         <ul className="space-y-4">
@@ -65,17 +62,27 @@ const LuckOfTheDice = () => {
             <li key={index} className="flex items-center space-x-4">
               <span className="text-lg">Player {index + 1}: </span>
 
-              {/* Show rolling animation or dice face */}
               {rolling === index ? (
                 <motion.span
-                  animate={{ rotate: [0, 360] }} // Simple rolling effect
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="text-3xl"
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [1, 1.5, 1],
+                    y: [-20, 20, 0],
+                  }}
+                  transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity }}
+                  className="text-4xl"
                 >
                   🎲
                 </motion.span>
               ) : (
-                <span className="text-4xl">{roll !== null ? diceFaces[roll - 1] : "❓"}</span>
+                <motion.span
+                  initial={{ scale: 0.5 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="text-5xl"
+                >
+                  {roll !== null ? diceFaces[roll - 1] : "❓"}
+                </motion.span>
               )}
 
               <button
@@ -83,7 +90,7 @@ const LuckOfTheDice = () => {
                 className={`bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ${
                   roll !== null ? "opacity-50 cursor-not-allowed" : ""
                 }`}
-                disabled={roll !== null || rolling !== null} // Disable button if player has already rolled or another player is rolling
+                disabled={roll !== null || rolling !== null}
               >
                 {roll !== null ? "Rolled" : "Roll Dice"}
               </button>
@@ -94,8 +101,8 @@ const LuckOfTheDice = () => {
 
       {result && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="mt-8"
         >
