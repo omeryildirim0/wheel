@@ -30,11 +30,26 @@ const LuckOfTheDice = () => {
       setPlayerRolls(newRolls);
       setRolling(null);
 
+      // Check if all players have rolled
       if (newRolls.every((roll) => roll !== null)) {
         const validRolls = newRolls.filter((roll): roll is number => roll !== null);
         const lowestRoll = Math.min(...validRolls);
-        const playerToPay = newRolls.indexOf(lowestRoll) + 1;
-        setResult(`Player ${playerToPay} pays for the meal with a roll of ${lowestRoll}!`);
+
+        // Find the players who have the lowest roll
+        const playersWithLowestRoll = newRolls
+          .map((roll, i) => (roll === lowestRoll ? i + 1 : null)) // Get the player indices
+          .filter((player): player is number => player !== null); // Remove null values
+
+        if (playersWithLowestRoll.length === 1) {
+          // If only one player has the lowest roll
+          setResult(`Player ${playersWithLowestRoll[0]} pays for the meal with a roll of ${lowestRoll}!`);
+        } else {
+          // If there's a tie, randomly choose one player to pay
+          const randomPlayer = playersWithLowestRoll[Math.floor(Math.random() * playersWithLowestRoll.length)];
+          setResult(
+            `It's a tie! Player ${randomPlayer} pays for the meal with a roll of ${lowestRoll} (randomly selected among tied players)!`
+          );
+        }
       }
     }, 1500); // Longer delay for animation effect
   };
