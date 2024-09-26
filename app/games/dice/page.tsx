@@ -47,17 +47,17 @@ const LuckOfTheDice = () => {
 
         // Find the players who have the lowest sum
         const playersWithLowestRoll = rollSums
-          .map((sum, i) => (sum === lowestSum ? i + 1 : null)) // Get the player indices
+          .map((sum, i) => (sum === lowestSum ? i : null)) // Get the player indices
           .filter((player): player is number => player !== null); // Remove null values
 
         if (playersWithLowestRoll.length === 1) {
           // If only one player has the lowest roll
-          setResult(`${playerNames[playersWithLowestRoll[0] - 1]} pays for the meal with a total of ${lowestSum}!`);
+          setResult(`${playerNames[playersWithLowestRoll[0]]} pays for the meal with a total of ${lowestSum}!`);
         } else {
           // If there's a tie, randomly choose one player to pay
           const randomPlayer = playersWithLowestRoll[Math.floor(Math.random() * playersWithLowestRoll.length)];
           setResult(
-            `It's a tie! ${playerNames[randomPlayer - 1]} pays for the meal with a total of ${lowestSum} (randomly selected among tied players)!`
+            `It's a tie! ${playerNames[randomPlayer]} pays for the meal with a total of ${lowestSum} (randomly selected among tied players)!`
           );
         }
       }
@@ -65,10 +65,10 @@ const LuckOfTheDice = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold mb-6">Luck of the Dice</h1>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-4 sm:px-8 md:px-12 lg:px-24">
+      <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">Luck of the Dice</h1>
 
-      <div className="mb-4">
+      <div className="mb-4 w-full sm:w-auto">
         <label className="mr-2 text-lg">Number of Players:</label>
         <input
           type="number"
@@ -76,27 +76,27 @@ const LuckOfTheDice = () => {
           onChange={handlePlayerCountChange}
           min="2"
           max="10"
-          className="px-2 py-1 border rounded"
+          className="px-2 py-1 border rounded w-full sm:w-auto"
         />
       </div>
 
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Player Names and Rolls:</h2>
+      <div className="mt-8 w-full">
+        <h2 className="text-xl font-semibold mb-4 text-center">Player Names and Rolls:</h2>
         <ul className="space-y-4">
           {playerRolls.map((roll, index) => (
-            <li key={index} className="flex flex-col space-y-2">
-              <div className="flex justify-between items-center space-x-6">
+            <li key={index} className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 sm:space-x-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-auto">
                 <span className="text-lg">Player {index + 1}: </span>
                 <input
                   type="text"
                   value={playerNames[index]}
                   onChange={(e) => handleNameChange(index, e.target.value)}
                   placeholder={`Enter name for Player ${index + 1}`}
-                  className="px-2 py-1 border rounded"
+                  className="px-2 py-1 border rounded w-full sm:w-auto mt-2 sm:mt-0 sm:ml-4"
                 />
               </div>
 
-              <div className="flex justify-between items-center space-x-6">
+              <div className="flex justify-between items-center w-full sm:w-auto">
                 {rolling === index ? (
                   <motion.span
                     animate={{
@@ -122,7 +122,7 @@ const LuckOfTheDice = () => {
 
                 <button
                   onClick={() => rollDiceForPlayer(index)}
-                  className={`bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ${
+                  className={`bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ml-4 ${
                     roll !== null ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                   disabled={roll !== null || rolling !== null}
@@ -140,7 +140,7 @@ const LuckOfTheDice = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mt-8"
+          className="mt-8 text-center"
         >
           <h2 className="text-2xl font-bold text-red-600">{result}</h2>
         </motion.div>
