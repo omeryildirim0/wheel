@@ -28,6 +28,10 @@ const LuckOfTheDice = () => {
     setPlayerNames(newNames);
   };
 
+  const getPlayerName = (index: number) => {
+    return playerNames[index] !== "" ? playerNames[index] : `Player ${index + 1}`;
+  };
+
   const rollDiceForPlayer = (index: number) => {
     setRolling(index);
 
@@ -52,12 +56,12 @@ const LuckOfTheDice = () => {
 
         if (playersWithLowestRoll.length === 1) {
           // If only one player has the lowest roll
-          setResult(`${playerNames[playersWithLowestRoll[0]]} pays for the meal with a total of ${lowestSum}!`);
+          setResult(`${getPlayerName(playersWithLowestRoll[0])} pays for the meal with a total of ${lowestSum}!`);
         } else {
           // If there's a tie, randomly choose one player to pay
           const randomPlayer = playersWithLowestRoll[Math.floor(Math.random() * playersWithLowestRoll.length)];
           setResult(
-            `It's a tie! ${playerNames[randomPlayer]} pays for the meal with a total of ${lowestSum} (randomly selected among tied players)!`
+            `It's a tie! ${getPlayerName(randomPlayer)} pays for the meal with a total of ${lowestSum} (randomly selected among tied players)!`
           );
         }
       }
@@ -86,7 +90,7 @@ const LuckOfTheDice = () => {
           {playerRolls.map((roll, index) => (
             <li key={index} className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 sm:space-x-6">
               <div className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-auto">
-                <span className="text-lg">Player {index + 1}: </span>
+                <span className="text-lg">{`Player ${index + 1}: `}</span>
                 <input
                   type="text"
                   value={playerNames[index]}
