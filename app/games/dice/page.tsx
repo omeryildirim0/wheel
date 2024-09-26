@@ -8,7 +8,7 @@ const diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
 const LuckOfTheDice = () => {
   const [playerCount, setPlayerCount] = useState<number>(2);
-  const [playerRolls, setPlayerRolls] = useState<(number | null)[]>(Array(2).fill(null));
+  const [playerRolls, setPlayerRolls] = useState<([number, number] | null)[]>(Array(2).fill(null));
   const [rolling, setRolling] = useState<number | null>(null);
   const [result, setResult] = useState<string | null>(null);
 
@@ -24,30 +24,32 @@ const LuckOfTheDice = () => {
     setRolling(index);
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 6) + 1;
+      const roll1 = Math.floor(Math.random() * 6) + 1;
+      const roll2 = Math.floor(Math.random() * 6) + 1;
       const newRolls = [...playerRolls];
-      newRolls[index] = roll;
+      newRolls[index] = [roll1, roll2];
       setPlayerRolls(newRolls);
       setRolling(null);
 
       // Check if all players have rolled
       if (newRolls.every((roll) => roll !== null)) {
-        const validRolls = newRolls.filter((roll): roll is number => roll !== null);
-        const lowestRoll = Math.min(...validRolls);
+        const validRolls = newRolls.filter((roll): roll is [number, number] => roll !== null);
+        const rollSums = validRolls.map((roll) => roll[0] + roll[1]);
+        const lowestSum = Math.min(...rollSums);
 
-        // Find the players who have the lowest roll
-        const playersWithLowestRoll = newRolls
-          .map((roll, i) => (roll === lowestRoll ? i + 1 : null)) // Get the player indices
+        // Find the players who have the lowest sum
+        const playersWithLowestRoll = rollSums
+          .map((sum, i) => (sum === lowestSum ? i + 1 : null)) // Get the player indices
           .filter((player): player is number => player !== null); // Remove null values
 
         if (playersWithLowestRoll.length === 1) {
           // If only one player has the lowest roll
-          setResult(`Player ${playersWithLowestRoll[0]} pays for the meal with a roll of ${lowestRoll}!`);
+          setResult(`Player ${playersWithLowestRoll[0]} pays for the meal with a total of ${lowestSum}!`);
         } else {
           // If there's a tie, randomly choose one player to pay
           const randomPlayer = playersWithLowestRoll[Math.floor(Math.random() * playersWithLowestRoll.length)];
           setResult(
-            `It's a tie! Player ${randomPlayer} pays for the meal with a roll of ${lowestRoll} (randomly selected among tied players)!`
+            `It's a tie! Player ${randomPlayer} pays for the meal with a total of ${lowestSum} (randomly selected among tied players)!`
           );
         }
       }
@@ -87,7 +89,7 @@ const LuckOfTheDice = () => {
                   transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity }}
                   className="text-4xl"
                 >
-                  🎲
+                  🎲🎲
                 </motion.span>
               ) : (
                 <motion.span
@@ -96,7 +98,7 @@ const LuckOfTheDice = () => {
                   transition={{ type: "spring", stiffness: 300 }}
                   className="text-5xl"
                 >
-                  {roll !== null ? diceFaces[roll - 1] : "❓"}
+                  {roll !== null ? `${diceFaces[roll[0] - 1]} ${diceFaces[roll[1] - 1]}` : "❓❓"}
                 </motion.span>
               )}
 
