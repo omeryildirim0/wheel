@@ -17,18 +17,8 @@ const GamesPage = () => {
           </Link>
         </div>
 
-        {/* Game 2: Tip Multiplier */}
-        <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Tip Multiplier</h2>
-          <p className="text-gray-600 mb-6 text-center">
-            Multiply your tip with a spin! See how generous you can be with just one spin.
-          </p>
-          <Link href="/games/tip-multiplier" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300">
-            Play Now
-          </Link>
-        </div>
 
-        {/* Game 3: Luck of the Dice */}
+        {/* Game 2: Luck of the Dice */}
         <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Luck of the Dice</h2>
           <p className="text-gray-600 mb-6 text-center">
@@ -38,6 +28,8 @@ const GamesPage = () => {
             Play Now
           </Link>
         </div>
+
+        
       </div>
     </div>
   );
