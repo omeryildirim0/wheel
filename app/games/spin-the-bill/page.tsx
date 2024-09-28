@@ -1,36 +1,41 @@
 "use client";
 import { useState } from 'react';
+import { Wheel } from 'react-custom-roulette';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useEffect } from 'react';
 
 const SpinTheBill = () => {
   const [players, setPlayers] = useState<string[]>([]);
   const [input, setInput] = useState<string>('');
-  const [wheelPlayers, setWheelPlayers] = useState<string[]>([]);
-  const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
+  const [prizes, setPrizes] = useState<any[]>([]);
+  const [mustSpin, setMustSpin] = useState(false);
+  const [selectedPrizeIndex, setSelectedPrizeIndex] = useState<number | null>(null);
 
   const addPlayer = () => {
     if (input.trim() !== '') {
-      setPlayers((prev) => [...prev, input.trim()]);
+      const newPlayer = input.trim();
+      setPlayers((prev) => [...prev, newPlayer]);
+      setPrizes((prev) => [...prev, { option: newPlayer }]);
       setInput('');
     }
   };
 
   const removePlayer = (player: string) => {
     setPlayers((prev) => prev.filter((p) => p !== player));
+    setPrizes((prev) => prev.filter((p) => p.option !== player));
   };
 
   const spinWheel = () => {
     if (players.length > 1) {
       const randomIndex = Math.floor(Math.random() * players.length);
-      setSelectedPlayer(players[randomIndex]);
+      setSelectedPrizeIndex(randomIndex);
+      setMustSpin(true);
     }
   };
 
-  useEffect(() => {
-    setWheelPlayers(players);
-  }, [players]);
+  const handleSpinStop = () => {
+    setMustSpin(false);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -66,9 +71,23 @@ const SpinTheBill = () => {
         <Button onClick={spinWheel} className="bg-green-500 text-white mb-6">Spin the Wheel</Button>
       )}
 
-      {selectedPlayer && (
+      <div className="flex justify-center items-center mb-6">
+        {prizes.length > 1 && (
+        <Wheel
+            mustStartSpinning={mustSpin}
+            prizeNumber={selectedPrizeIndex ?? 0}  // Fallback to 0 if `selectedPrizeIndex` is null
+            data={prizes}
+            backgroundColors={['#3f51b5', '#ff5722']}
+            textColors={['#ffffff']}
+            onStopSpinning={handleSpinStop}
+        />
+        
+        )}
+      </div>
+
+      {selectedPrizeIndex !== null && !mustSpin && (
         <div className="text-xl font-semibold text-green-600 mt-4">
-          {selectedPlayer} will pay the bill!
+          {prizes[selectedPrizeIndex]?.option} will pay the bill!
         </div>
       )}
     </div>
