@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
 
   const handleSpinClick = () => {
     setIsSpinning(true);
-    setTimeout(() => setIsSpinning(false), 1500); // Reset spin after 1.5 seconds
+    setTimeout(() => setIsSpinning(false), 2500); // Reset spin after 1.5 seconds
   };
 
   return (
