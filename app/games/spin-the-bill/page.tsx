@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,12 @@ const SpinTheBill = () => {
   const [prizes, setPrizes] = useState<any[]>([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [selectedPrizeIndex, setSelectedPrizeIndex] = useState<number | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure the component is only rendered on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const addPlayer = () => {
     if (input.trim() !== '') {
@@ -71,19 +77,19 @@ const SpinTheBill = () => {
         <Button onClick={spinWheel} className="bg-green-500 text-white mb-6">Spin the Wheel</Button>
       )}
 
-      <div className="flex justify-center items-center mb-6">
-        {prizes.length > 1 && (
-        <Wheel
+      {/* Only render the wheel if the component is on the client side */}
+      {isClient && prizes.length > 1 && (
+        <div className="flex justify-center items-center mb-6">
+          <Wheel
             mustStartSpinning={mustSpin}
-            prizeNumber={selectedPrizeIndex ?? 0}  // Fallback to 0 if `selectedPrizeIndex` is null
+            prizeNumber={selectedPrizeIndex ?? 0}  // Default to 0 if `selectedPrizeIndex` is null
             data={prizes}
             backgroundColors={['#3f51b5', '#ff5722']}
             textColors={['#ffffff']}
             onStopSpinning={handleSpinStop}
-        />
-        
-        )}
-      </div>
+          />
+        </div>
+      )}
 
       {selectedPrizeIndex !== null && !mustSpin && (
         <div className="text-xl font-semibold text-green-600 mt-4">
