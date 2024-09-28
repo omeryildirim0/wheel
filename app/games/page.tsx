@@ -5,7 +5,7 @@ const GamesPage = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">Wheel of Meals Games</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 w-full max-w-5xl">
         {/* Game 1: Spin the Bill */}
         <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Spin the Bill</h2>
@@ -17,7 +17,6 @@ const GamesPage = () => {
           </Link>
         </div>
 
-
         {/* Game 2: Luck of the Dice */}
         <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800">Luck of the Dice</h2>
@@ -28,8 +27,6 @@ const GamesPage = () => {
             Play Now
           </Link>
         </div>
-
-        
       </div>
     </div>
   );
