@@ -6,11 +6,11 @@ const GamesPage = () => {
       <h1 className="text-4xl font-bold mb-12 text-center text-gray-800">Wheel of Meals Games</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8 w-full max-w-5xl">
-        {/* Game 1: Spin the Bill */}
+        {/* Game 1: Russian Roulette */}
         <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Spin the Bill</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Russian Roulette</h2>
           <p className="text-gray-600 mb-6 text-center">
-            Spin the wheel and let fate decide who pays the bill! Perfect for group dining.
+            Spin the chamber, pull the trigger, and hope you don't get hit! The unlucky player pays for the meal.
           </p>
           <Link href="/games/russian-roulette" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300">
             Play Now
