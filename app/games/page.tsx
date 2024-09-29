@@ -12,7 +12,7 @@ const GamesPage = () => {
           <p className="text-gray-600 mb-6 text-center">
             Spin the wheel and let fate decide who pays the bill! Perfect for group dining.
           </p>
-          <Link href="/games/spin-the-bill" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300">
+          <Link href="/games/russian-roulette" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition duration-300">
             Play Now
           </Link>
         </div>
