@@ -64,10 +64,10 @@ const RevolverGame = () => {
             </ul>
 
             {/* Revolver Design */}
-            <div className="relative w-40 h-72 flex flex-col items-center">
+            <div className="relative w-48 h-96 flex flex-col items-center">
               {/* Barrel */}
-              <div className="absolute top-0 w-16 h-16 bg-[#f2cc99] rounded-full border-4 border-gray-700 flex justify-center items-center">
-                <div className="w-8 h-8 bg-gray-400 rounded-full border-2 border-gray-700"></div>
+              <div className="absolute top-0 w-24 h-24 bg-[#e0d4b9] rounded-full border-4 border-gray-700 flex justify-center items-center">
+                <div className="w-10 h-10 bg-gray-400 rounded-full border-2 border-gray-700"></div>
               </div>
 
               {/* Chamber */}
@@ -75,31 +75,31 @@ const RevolverGame = () => {
                 initial={{ rotate: 0 }}
                 animate={{ rotate: currentChamber * 60 }}
                 transition={{ duration: 1 }}
-                className="relative top-14 w-32 h-32 bg-gray-200 border-4 border-gray-700 rounded-full flex justify-center items-center"
+                className="relative top-24 w-40 h-40 bg-gray-200 border-4 border-gray-700 rounded-full flex justify-center items-center"
               >
-                {/* Bullet Slots (Fixed Alignment) */}
+                {/* Bullet Slots */}
                 {[...Array(6)].map((_, idx) => (
                   <div
                     key={idx}
-                    className={`absolute w-6 h-6 bg-gray-400 rounded-full border-2 border-gray-700 ${
+                    className={`absolute w-8 h-8 bg-gray-400 rounded-full border-2 border-gray-700 ${
                       idx === bulletChamber ? "bg-red-600" : ""
                     }`}
                     style={{
                       top: "50%",
                       left: "50%",
-                      transform: `rotate(${idx * 60}deg) translate(0, -60px)`,
+                      transform: `rotate(${idx * 60}deg) translate(0, -70px)`,
                     }}
                   />
                 ))}
               </motion.div>
 
               {/* Handle */}
-              <div className="absolute top-40 w-12 h-32 bg-[#a67b5b] rounded-b-full border-4 border-gray-700"></div>
+              <div className="absolute top-56 w-20 h-48 bg-[#a67b5b] rounded-b-full border-4 border-gray-700"></div>
 
               {/* Bullets */}
-              <div className="absolute top-60 left-40 flex flex-col items-center space-y-2">
-                <div className="w-4 h-12 bg-gray-400 rounded-full border-2 border-gray-700"></div>
-                <div className="w-8 h-4 bg-gray-400 rounded-full border-2 border-gray-700"></div>
+              <div className="absolute top-80 left-48 flex flex-col items-center space-y-2">
+                <div className="w-6 h-16 bg-gray-400 rounded-full border-2 border-gray-700"></div>
+                <div className="w-10 h-5 bg-gray-400 rounded-full border-2 border-gray-700"></div>
               </div>
             </div>
 
