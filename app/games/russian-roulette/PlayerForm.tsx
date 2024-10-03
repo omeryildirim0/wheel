@@ -1,38 +1,30 @@
-// PlayerForm.tsx
+"use client";
+
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
-export default function PlayerForm() {
+
+const PlayerInput = () => {
   const [players, setPlayers] = useState<string[]>([]);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
 
-  const handleAddPlayer = () => {
-    if (name.trim()) {
-      setPlayers([...players, name]);
-      setName(''); // Reset input field
+  const addPlayer = () => {
+    if (name.trim() !== "") {
+      setPlayers([...players, name.trim()]);
+      setName("");
     }
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Add Players</h1>
-      <div className="flex space-x-2">
-        <Input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter player's name"
-        />
-        <Button onClick={handleAddPlayer}>Add Player</Button>
-      </div>
+    <div className="flex flex-col items-center">
+      <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter Player Name" />
+      <Button onClick={addPlayer} className="mt-2">Add Player</Button>
       <div className="mt-4">
-        <h2 className="text-xl font-semibold">Players:</h2>
-        <ul className="list-disc pl-5">
-          {players.map((player, index) => (
-            <li key={index}>{player}</li>
-          ))}
-        </ul>
+        {players.length > 0 && players.map((player, index) => <p key={index}>{player}</p>)}
       </div>
     </div>
   );
-}
+};
+
+export default PlayerInput;
