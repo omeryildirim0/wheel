@@ -55,7 +55,7 @@ const RussianRoulette = () => {
   return (
     <div className="p-6 max-w-xl mx-auto">
       <Card className="p-4 bg-white shadow-md rounded-md">
-        <h1 className="text-2xl font-semibold mb-4 text-center">Wheel of Meals: Russian Roulette</h1>
+        <h1 className="text-2xl font-semibold mb-4 text-center">Russian Roulette</h1>
 
         {/* Add Player Section */}
         <div className="mb-4">
