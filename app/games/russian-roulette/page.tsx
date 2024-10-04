@@ -101,32 +101,13 @@ const RussianRoulette = () => {
   );
 };
 
-// SVG Revolver Drawing Component
-const Revolver = () => (
-  <svg
-    width="300"
-    height="150"
-    viewBox="0 0 300 150"
-    xmlns="http://www.w3.org/2000/svg"
-    className="stroke-current text-gray-800"
-  >
-    {/* Revolver body */}
-    <rect x="20" y="50" width="200" height="50" fill="#666" rx="5" />
-    <circle cx="160" cy="75" r="20" fill="#888" />
-    <rect x="50" y="80" width="30" height="40" fill="#666" />
+const Revolver = () => {
+  return (
+    <div className="flex justify-center">
+      <img src="/revolver.svg" alt="Revolver" className="h-64 w-auto" />
+    </div>
+  );
+};
 
-    {/* Barrel */}
-    <rect x="200" y="60" width="70" height="30" fill="#444" />
-    <rect x="240" y="65" width="40" height="20" fill="#222" />
-    <circle cx="240" cy="75" r="10" fill="#000" />
-
-    {/* Trigger guard */}
-    <path d="M 60 90 C 40 100, 40 120, 60 120" stroke="#000" strokeWidth="4" fill="none" />
-
-    {/* Handle */}
-    <rect x="20" y="90" width="20" height="60" fill="#333" />
-    <circle cx="30" cy="150" r="10" fill="#000" />
-  </svg>
-);
 
 export default RussianRoulette;
