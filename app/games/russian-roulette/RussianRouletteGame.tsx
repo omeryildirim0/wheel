@@ -24,7 +24,7 @@ const RussianRoulette = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center min-h-[80vh]">
       <h1 className="text-3xl font-bold mb-4">Russian Roulette</h1>
       <p className="text-lg mb-6">Take your turn. Will you pay the bill?</p>
       <Button onClick={pullTrigger} disabled={gameOver}>
