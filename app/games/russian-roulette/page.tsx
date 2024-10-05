@@ -5,8 +5,38 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils'; // For classnames if needed
 
-const clickSound = '/sounds/click.mp3';  // Add sound path
-const bangSound = '/sounds/bang.mp3';    // Add sound path
+// Web Audio API-based sound generation for 'click' and 'bang' sounds
+const playClickSound = () => {
+  const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const oscillator = context.createOscillator();
+  const gainNode = context.createGain();
+
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(500, context.currentTime); // Frequency for the click sound
+  gainNode.gain.setValueAtTime(0.1, context.currentTime); // Set volume
+
+  oscillator.connect(gainNode);
+  gainNode.connect(context.destination);
+
+  oscillator.start();
+  oscillator.stop(context.currentTime + 0.05); // Short "click" sound
+};
+
+const playBangSound = () => {
+  const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const oscillator = context.createOscillator();
+  const gainNode = context.createGain();
+
+  oscillator.type = 'sawtooth';
+  oscillator.frequency.setValueAtTime(120, context.currentTime); // Low frequency for 'bang'
+  gainNode.gain.setValueAtTime(1, context.currentTime); // Set volume
+
+  oscillator.connect(gainNode);
+  gainNode.connect(context.destination);
+
+  oscillator.start();
+  oscillator.stop(context.currentTime + 0.3); // Longer "bang" sound
+};
 
 const RussianRoulette = () => {
   const [players, setPlayers] = useState<string[]>([]);
@@ -24,11 +54,6 @@ const RussianRoulette = () => {
     }
   };
 
-  const playSound = (soundPath: string) => {
-    const audio = new Audio(soundPath);
-    audio.play();
-  };
-
   const pullTrigger = () => {
     if (players.length === 0 || gameOver) return;
 
@@ -37,12 +62,12 @@ const RussianRoulette = () => {
     if (currentChamber === bulletChamber) {
       // Gun fired, end game
       setGameOver(true);
-      playSound(bangSound);
+      playBangSound();
       setBoom(true); // Trigger BOOM effect
       setTimeout(() => setBoom(false), 1000); // Remove BOOM effect after 1 second
     } else {
       // Empty chamber
-      playSound(clickSound);
+      playClickSound();
       setChamberPosition(chamberPosition + 1);
       setCurrentPlayerIndex((currentPlayerIndex + 1) % players.length);
     }
