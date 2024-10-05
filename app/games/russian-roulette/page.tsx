@@ -24,19 +24,59 @@ const playClickSound = () => {
 
 const playBangSound = () => {
   const context = new (window.AudioContext || (window as any).webkitAudioContext)();
-  const oscillator = context.createOscillator();
-  const gainNode = context.createGain();
 
-  oscillator.type = 'sawtooth';
-  oscillator.frequency.setValueAtTime(120, context.currentTime); // Low frequency for 'bang'
-  gainNode.gain.setValueAtTime(1, context.currentTime); // Set volume
+  // Sharp initial crack (high frequency)
+  const oscillator1 = context.createOscillator();
+  const gainNode1 = context.createGain();
 
-  oscillator.connect(gainNode);
-  gainNode.connect(context.destination);
+  oscillator1.type = 'square';
+  oscillator1.frequency.setValueAtTime(1000, context.currentTime); // High frequency for initial crack
+  gainNode1.gain.setValueAtTime(1, context.currentTime);
+  gainNode1.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.1); // Quick fade-out
 
-  oscillator.start();
-  oscillator.stop(context.currentTime + 0.3); // Longer "bang" sound
+  oscillator1.connect(gainNode1);
+  gainNode1.connect(context.destination);
+
+  oscillator1.start();
+  oscillator1.stop(context.currentTime + 0.1); // Short duration for crack
+
+  // Low rumble (low frequency)
+  const oscillator2 = context.createOscillator();
+  const gainNode2 = context.createGain();
+
+  oscillator2.type = 'sawtooth';
+  oscillator2.frequency.setValueAtTime(120, context.currentTime); // Low frequency for rumble
+  gainNode2.gain.setValueAtTime(0.7, context.currentTime);
+  gainNode2.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.5); // Longer fade-out
+
+  oscillator2.connect(gainNode2);
+  gainNode2.connect(context.destination);
+
+  oscillator2.start();
+  oscillator2.stop(context.currentTime + 0.5); // Longer duration for rumble
+
+  // Optional: Add a noise burst for a more realistic gunshot effect
+  const bufferSize = context.sampleRate * 0.1; // Duration of the noise burst
+  const buffer = context.createBuffer(1, bufferSize, context.sampleRate);
+  const output = buffer.getChannelData(0);
+
+  for (let i = 0; i < bufferSize; i++) {
+    output[i] = Math.random() * 2 - 1; // White noise
+  }
+
+  const noise = context.createBufferSource();
+  noise.buffer = buffer;
+
+  const noiseGain = context.createGain();
+  noiseGain.gain.setValueAtTime(1, context.currentTime);
+  noiseGain.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.1); // Quick fade-out for noise
+
+  noise.connect(noiseGain);
+  noiseGain.connect(context.destination);
+  noise.start();
+  noise.stop(context.currentTime + 0.1); // Short burst of noise
 };
+
 
 const RussianRoulette = () => {
   const [players, setPlayers] = useState<string[]>([]);
