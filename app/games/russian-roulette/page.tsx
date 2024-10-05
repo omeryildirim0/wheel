@@ -8,19 +8,38 @@ import { cn } from '@/lib/utils'; // For classnames if needed
 // Web Audio API-based sound generation for 'click' and 'bang' sounds
 const playClickSound = () => {
   const context = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+  // Short, high-frequency click (mechanical sound)
   const oscillator = context.createOscillator();
   const gainNode = context.createGain();
 
-  oscillator.type = 'square';
-  oscillator.frequency.setValueAtTime(500, context.currentTime); // Frequency for the click sound
-  gainNode.gain.setValueAtTime(0.1, context.currentTime); // Set volume
+  oscillator.type = 'triangle'; // A softer waveform to simulate the metallic click
+  oscillator.frequency.setValueAtTime(800, context.currentTime); // Frequency around 800 Hz for the click sound
+  gainNode.gain.setValueAtTime(0.5, context.currentTime); // Initial gain (volume)
+  gainNode.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.05); // Short, quick fade out for the click
 
   oscillator.connect(gainNode);
   gainNode.connect(context.destination);
 
   oscillator.start();
-  oscillator.stop(context.currentTime + 0.05); // Short "click" sound
+  oscillator.stop(context.currentTime + 0.05); // Very short sound duration (50ms)
+
+  // Optional: Add a second, lower-pitched click for a more mechanical feel
+  const oscillator2 = context.createOscillator();
+  const gainNode2 = context.createGain();
+
+  oscillator2.type = 'triangle';
+  oscillator2.frequency.setValueAtTime(200, context.currentTime); // Lower frequency for a secondary click
+  gainNode2.gain.setValueAtTime(0.3, context.currentTime); // Softer volume for secondary sound
+  gainNode2.gain.exponentialRampToValueAtTime(0.001, context.currentTime + 0.03); // Even quicker fade out
+
+  oscillator2.connect(gainNode2);
+  gainNode2.connect(context.destination);
+
+  oscillator2.start();
+  oscillator2.stop(context.currentTime + 0.03); // Very short duration for this secondary click
 };
+
 
 const playBangSound = () => {
   const context = new (window.AudioContext || (window as any).webkitAudioContext)();
