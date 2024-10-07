@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Analytics } from '@vercel/analytics/react';
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider"; // Ensure this import path is correct
 import Navbar from "@/components/Navbar";
