@@ -59,6 +59,7 @@ export default function RootLayout({
           <Navbar />
           <main className="flex-grow">{children}</main>
           <Footer />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
