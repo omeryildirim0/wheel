@@ -6,7 +6,6 @@ import ThemeToggleButton from './ThemeToggleButton';
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSpinning, setIsSpinning] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
