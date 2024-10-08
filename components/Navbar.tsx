@@ -23,14 +23,12 @@ const Navbar: React.FC = () => {
         {/* Homepage Link */}
         <a
           href="/"
-          className={`text-3xl font-extrabold text-white transform transition duration-300 ease-in-out cursor-pointer ${
-            isSpinning ? 'animate-spin-multiple' : 'hover:scale-105 hover:text-yellow-300'
-          }`}
+          className="text-3xl font-extrabold text-white transform transition duration-300 ease-in-out cursor-pointer hover:scale-105 hover:text-yellow-300"
           style={{ fontFamily: "'Poppins', sans-serif" }}
-          onClick={handleSpinClick}
         >
           Wheel of Meals
         </a>
+
 
         {/* Navigation Links - Desktop */}
         <div className="hidden md:flex space-x-8 items-center">
