@@ -12,10 +12,6 @@ const Navbar: React.FC = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleSpinClick = () => {
-    setIsSpinning(true);
-    setTimeout(() => setIsSpinning(false), 2500); // Reset spin after 1.5 seconds
-  };
 
   return (
     <nav className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 dark:bg-gradient-to-r dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 shadow-md py-4 relative top-0 left-0 w-full z-150">
